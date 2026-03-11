@@ -1,6 +1,5 @@
 package seedu.address.model.person;
 
-import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Collections;
@@ -13,7 +12,7 @@ import seedu.address.model.tag.Tag;
 
 /**
  * Represents a Person in the address book.
- * Guarantees: name, phone, email, remark and tags are present and not null; address is optional.
+ * Guarantees: details are present and not null, field values are validated, immutable.
  */
 public class Person {
 
@@ -23,30 +22,19 @@ public class Person {
     private final Email email;
 
     // Data fields
-    private final Address address; // optional – may be null
-    private final Remark remark;
+    private final Address address;
     private final Set<Tag> tags = new HashSet<>();
 
     /**
-     * Creates a Person with all fields including address.
-     * Address may be {@code null} to indicate it was not provided.
+     * Every field must be present and not null.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Remark remark, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, remark, tags);
-        requireNonNull(name);
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
+        requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
         this.email = email;
-        this.address = address; // nullable
-        this.remark = remark;
+        this.address = address;
         this.tags.addAll(tags);
-    }
-
-    /**
-     * Creates a Person without an address (address defaults to {@code null}).
-     */
-    public Person(Name name, Phone phone, Email email, Remark remark, Set<Tag> tags) {
-        this(name, phone, email, null, remark, tags);
     }
 
     public Name getName() {
@@ -61,23 +49,8 @@ public class Person {
         return email;
     }
 
-    /**
-     * Returns the address, or {@code null} if no address was provided.
-     * Callers should check {@link #hasAddress()} before using this value.
-     */
     public Address getAddress() {
         return address;
-    }
-
-    /**
-     * Returns true if this person has an address set.
-     */
-    public boolean hasAddress() {
-        return address != null;
-    }
-
-    public Remark getRemark() {
-        return remark;
     }
 
     /**
@@ -120,15 +93,14 @@ public class Person {
         return name.equals(otherPerson.name)
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
-                && Objects.equals(address, otherPerson.address)
-                && remark.equals(otherPerson.remark)
+                && address.equals(otherPerson.address)
                 && tags.equals(otherPerson.tags);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, remark, tags);
+        return Objects.hash(name, phone, email, address, tags);
     }
 
     @Override
@@ -138,7 +110,6 @@ public class Person {
                 .add("phone", phone)
                 .add("email", email)
                 .add("address", address)
-                .add("remark", remark)
                 .add("tags", tags)
                 .toString();
     }

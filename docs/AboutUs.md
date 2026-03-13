@@ -47,11 +47,11 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 - Role: Developer
 - Responsibilities: Dev Ops + Threading
 
-### James Doe
+### Ng Xiang En Evan
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/evananann.png" width="200px">
 
-[[github](http://github.com/johndoe)]
+[[github](http://github.com/evananann)]
 [[portfolio](team/johndoe.md)]
 
 - Role: Developer

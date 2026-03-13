@@ -27,11 +27,17 @@ public class RemarkCommandTest {
 
     private Model model;
 
+    /**
+     * Initializes a model containing a typical address book before each test.
+     */
     @BeforeEach
     public void setUp() {
         model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
     }
 
+    /**
+     * Verifies that adding a non-empty remark to a person succeeds.
+     */
     @Test
     public void execute_addRemarkUnfilteredList_success() {
         Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
@@ -48,6 +54,9 @@ public class RemarkCommandTest {
         assertCommandSuccess(remarkCommand, model, expectedMessage, expectedModel);
     }
 
+    /**
+     * Verifies that providing an empty remark clears an existing remark successfully.
+     */
     @Test
     public void execute_deleteRemarkUnfilteredList_success() {
         Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
@@ -65,6 +74,9 @@ public class RemarkCommandTest {
         assertCommandSuccess(remarkCommand, model, expectedMessage, expectedModel);
     }
 
+    /**
+     * Verifies that execution fails when the target index is out of bounds.
+     */
     @Test
     public void execute_invalidIndexUnfilteredList_throwsCommandException() {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
@@ -73,6 +85,9 @@ public class RemarkCommandTest {
         assertCommandFailure(remarkCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
     }
 
+    /**
+     * Verifies equality semantics for {@code RemarkCommand}.
+     */
     @Test
     public void equals() {
         RemarkCommand remarkFirstCommand = new RemarkCommand(INDEX_FIRST_PERSON, new Remark("First"));

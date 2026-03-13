@@ -17,6 +17,9 @@ import seedu.address.testutil.AddressBookBuilder;
  */
 public class SortCommandTest {
 
+    /**
+     * Verifies that sorting an unsorted list succeeds.
+     */
     @Test
     public void execute_unsortedList_success() {
         Model model = new ModelManager(new AddressBookBuilder()
@@ -29,6 +32,9 @@ public class SortCommandTest {
         assertCommandSuccess(new SortCommand(), model, SortCommand.MESSAGE_SUCCESS, expectedModel);
     }
 
+    /**
+     * Verifies that sorting an already sorted list is still successful.
+     */
     @Test
     public void execute_sortedList_success() {
         Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());

@@ -32,10 +32,16 @@ import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
 
+/**
+ * Contains unit tests for {@link AddressBookParser}.
+ */
 public class AddressBookParserTest {
 
     private final AddressBookParser parser = new AddressBookParser();
 
+    /**
+     * Verifies parsing of {@code add} commands.
+     */
     @Test
     public void parseCommand_add() throws Exception {
         Person person = new PersonBuilder().build();
@@ -43,12 +49,18 @@ public class AddressBookParserTest {
         assertEquals(new AddCommand(person), command);
     }
 
+    /**
+     * Verifies parsing of {@code clear} commands.
+     */
     @Test
     public void parseCommand_clear() throws Exception {
         assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD) instanceof ClearCommand);
         assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD + " 3") instanceof ClearCommand);
     }
 
+    /**
+     * Verifies parsing of {@code delete} commands.
+     */
     @Test
     public void parseCommand_delete() throws Exception {
         DeleteCommand command = (DeleteCommand) parser.parseCommand(
@@ -56,6 +68,9 @@ public class AddressBookParserTest {
         assertEquals(new DeleteCommand(INDEX_FIRST_PERSON), command);
     }
 
+    /**
+     * Verifies parsing of {@code edit} commands.
+     */
     @Test
     public void parseCommand_edit() throws Exception {
         Person person = new PersonBuilder().build();
@@ -65,12 +80,18 @@ public class AddressBookParserTest {
         assertEquals(new EditCommand(INDEX_FIRST_PERSON, descriptor), command);
     }
 
+    /**
+     * Verifies parsing of {@code exit} commands.
+     */
     @Test
     public void parseCommand_exit() throws Exception {
         assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD) instanceof ExitCommand);
         assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD + " 3") instanceof ExitCommand);
     }
 
+    /**
+     * Verifies parsing of {@code find} commands.
+     */
     @Test
     public void parseCommand_find() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
@@ -79,18 +100,27 @@ public class AddressBookParserTest {
         assertEquals(new FindCommand(new NameContainsKeywordsPredicate(keywords)), command);
     }
 
+    /**
+     * Verifies parsing of {@code help} commands.
+     */
     @Test
     public void parseCommand_help() throws Exception {
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD) instanceof HelpCommand);
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD + " 3") instanceof HelpCommand);
     }
 
+    /**
+     * Verifies parsing of {@code list} commands.
+     */
     @Test
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
     }
 
+    /**
+     * Verifies parsing of {@code remark} commands.
+     */
     @Test
     public void parseCommand_remark() throws Exception {
         RemarkCommand command = (RemarkCommand) parser.parseCommand(
@@ -98,18 +128,27 @@ public class AddressBookParserTest {
         assertEquals(new RemarkCommand(INDEX_FIRST_PERSON, new Remark("Likes to swim.")), command);
     }
 
+    /**
+     * Verifies parsing of {@code sort} commands.
+     */
     @Test
     public void parseCommand_sort() throws Exception {
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD) instanceof SortCommand);
         assertTrue(parser.parseCommand(SortCommand.COMMAND_WORD + " 3") instanceof SortCommand);
     }
 
+    /**
+     * Verifies that empty input produces a parse exception.
+     */
     @Test
     public void parseCommand_unrecognisedInput_throwsParseException() {
         assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), ()
             -> parser.parseCommand(""));
     }
 
+    /**
+     * Verifies that unknown command words produce a parse exception.
+     */
     @Test
     public void parseCommand_unknownCommand_throwsParseException() {
         assertThrows(ParseException.class, MESSAGE_UNKNOWN_COMMAND, () -> parser.parseCommand("unknownCommand"));

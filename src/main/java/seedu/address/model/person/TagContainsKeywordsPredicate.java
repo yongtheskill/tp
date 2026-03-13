@@ -25,6 +25,14 @@ public class TagContainsKeywordsPredicate implements Predicate<Person> {
         this.keywords = new ArrayList<>(keywords);
     }
 
+    /**
+     * Tests whether the given {@code Person}'s tags contain any of the stored keywords,
+     * using case-insensitive comparison on tag names.
+     *
+     * @param person person whose tags are to be tested
+     * @return {@code true} if at least one tag name matches any keyword, {@code false} otherwise
+     * @throws NullPointerException if {@code person} is {@code null}
+     */
     @Override
     public boolean test(Person person) {
         requireNonNull(person);
@@ -34,6 +42,13 @@ public class TagContainsKeywordsPredicate implements Predicate<Person> {
                         .anyMatch(tagName -> tagName.equalsIgnoreCase(keyword)));
     }
 
+    /**
+     * Returns true if both predicates use equal keyword lists.
+     *
+     * @param other other object to compare to
+     * @return {@code true} if {@code other} is a {@code TagContainsKeywordsPredicate}
+     *         with an equal list of keywords
+     */
     @Override
     public boolean equals(Object other) {
         if (other == this) {
@@ -48,11 +63,21 @@ public class TagContainsKeywordsPredicate implements Predicate<Person> {
         return keywords.equals(otherPredicate.keywords);
     }
 
+    /**
+     * Returns a hash code value for this predicate based on its keywords.
+     *
+     * @return hash code representing this predicate
+     */
     @Override
     public int hashCode() {
         return Objects.hash(keywords);
     }
 
+    /**
+     * Returns a string representation of this predicate for debugging.
+     *
+     * @return string representation containing the keywords
+     */
     @Override
     public String toString() {
         return new ToStringBuilder(this).add("keywords", keywords).toString();

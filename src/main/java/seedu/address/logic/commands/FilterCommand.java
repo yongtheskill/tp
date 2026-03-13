@@ -37,6 +37,14 @@ public class FilterCommand extends Command {
         this.predicate = predicate;
     }
 
+    /**
+     * Executes the filter operation on the given {@code Model}, updating the filtered
+     * person list to show only persons whose tags match this command's predicate.
+     *
+     * @param model model to apply the filter to
+     * @return the {@code CommandResult} describing the outcome of the command
+     * @throws NullPointerException if {@code model} is {@code null}
+     */
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
@@ -45,6 +53,12 @@ public class FilterCommand extends Command {
                 String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, model.getFilteredPersonList().size()));
     }
 
+    /**
+     * Returns true if both {@code FilterCommand} instances use equal predicates.
+     *
+     * @param other other object to compare to
+     * @return {@code true} if {@code other} is a {@code FilterCommand} with an equal predicate
+     */
     @Override
     public boolean equals(Object other) {
         if (other == this) {
@@ -59,11 +73,21 @@ public class FilterCommand extends Command {
         return predicate.equals(otherFilterCommand.predicate);
     }
 
+    /**
+     * Returns a hash code value for this {@code FilterCommand}, based on its predicate.
+     *
+     * @return hash code representing this command
+     */
     @Override
     public int hashCode() {
         return Objects.hash(predicate);
     }
 
+    /**
+     * Returns a string representation of this {@code FilterCommand} for debugging.
+     *
+     * @return string representation containing the predicate
+     */
     @Override
     public String toString() {
         return new ToStringBuilder(this)

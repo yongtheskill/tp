@@ -11,14 +11,25 @@ public class AliasRegistry {
     private final Map<String, String> aliasMap = new HashMap<>();
 
     /**
-     * Adds an alias mapping. Returns true if successful, false if conflict.
+     * Adds an alias mapping. Returns true if successful, false if conflict or invalid input.
      */
     public boolean addAlias(String alias, String commandWord, Set<String> reservedWords) {
-        if (reservedWords.contains(alias) || aliasMap.containsKey(alias)) {
+        if (alias == null || alias.isBlank() || commandWord == null || commandWord.isBlank()) {
+            return false;
+        }
+        Set<String> reserved = (reservedWords != null) ? reservedWords : Set.of();
+        if (reserved.contains(alias) || aliasMap.containsKey(alias)) {
             return false;
         }
         aliasMap.put(alias, commandWord);
         return true;
+    }
+
+    /**
+     * Clears all stored aliases.
+     */
+    public void clear() {
+        aliasMap.clear();
     }
 
     /**

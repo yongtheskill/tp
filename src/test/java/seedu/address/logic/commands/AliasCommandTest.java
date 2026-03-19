@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ public class AliasCommandTest {
     @BeforeEach
     public void setUp() {
         model = new ModelManager();
+        AliasCommand.getAliasRegistry().clear();
     }
 
     @Test
@@ -52,6 +54,6 @@ public class AliasCommandTest {
         cmd.execute(model);
         AliasCommand listCmd = new AliasCommand("list", null, null);
         CommandResult result = listCmd.execute(model);
-        assertEquals(true, result.getFeedbackToUser().contains("lc -> list"));
+        assertTrue(result.getFeedbackToUser().contains("lc -> list"), "expected alias listing to contain 'lc -> list'");
     }
 }

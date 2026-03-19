@@ -10,19 +10,19 @@ public class AliasCommandParser implements Parser<AliasCommand> {
     @Override
     public AliasCommand parse(String args) throws ParseException {
         String trimmedArgs = args.trim();
-        String[] tokens = trimmedArgs.split("\\s+");
-        if (tokens.length == 0) {
+        if (trimmedArgs.isEmpty()) {
             throw new ParseException(AliasCommand.MESSAGE_USAGE);
         }
+        String[] tokens = trimmedArgs.split("\\s+");
         String action = tokens[0];
         if (action.equals("add")) {
             if (tokens.length != 3) {
-                throw new ParseException("Usage: alias add <alias> <command>");
+                throw new ParseException(AliasCommand.MESSAGE_USAGE);
             }
             return new AliasCommand("add", tokens[1], tokens[2]);
         } else if (action.equals("remove")) {
             if (tokens.length != 2) {
-                throw new ParseException("Usage: alias remove <alias>");
+                throw new ParseException(AliasCommand.MESSAGE_USAGE);
             }
             return new AliasCommand("remove", tokens[1], null);
         } else if (action.equals("list")) {

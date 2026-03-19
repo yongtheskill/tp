@@ -15,9 +15,14 @@ public class AliasCommand extends Command {
     public static final String MESSAGE_USAGE = "alias add <alias> <command> | alias remove <alias> | alias list";
     public static final String MESSAGE_ADD_SUCCESS = "Alias '%s' added for command '%s'.";
     public static final String MESSAGE_ADD_CONFLICT = "Alias '%s' conflicts with existing command or alias.";
+    public static final String MESSAGE_INVALID_TARGET = "Invalid target command '%s'.";
     public static final String MESSAGE_REMOVE_SUCCESS = "Alias '%s' removed.";
     public static final String MESSAGE_REMOVE_FAIL = "Alias '%s' not found.";
     public static final String MESSAGE_LIST = "Aliases:\n%s";
+
+    public static final Set<String> RESERVED_COMMAND_WORDS = Set.of(
+            "add", "archive", "edit", "delete", "star", "unstar", "clear", "list", "listarchived", "exit", "help",
+            "remark", "sort", "filter", "find", "unarchive", "alias");
 
     private static final AliasRegistry aliasRegistry = new AliasRegistry();
 
@@ -41,12 +46,12 @@ public class AliasCommand extends Command {
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
-        Set<String> reservedWords = Set.of(
-                "add", "archive", "edit", "delete", "star", "unstar", "clear", "list", "listarchived", "exit", "help",
-                "remark", "sort", "filter", "find", "unarchive", "alias");
         switch (action) {
         case "add":
-            if (aliasRegistry.addAlias(alias, command, reservedWords)) {
+            if (!RESERVED_COMMAND_WORDS.contains(command)) {
+                throw new CommandException(String.format(MESSAGE_INVALID_TARGET, command));
+            }
+            if (aliasRegistry.addAlias(alias, command, RESERVED_COMMAND_WORDS)) {
                 return new CommandResult(String.format(MESSAGE_ADD_SUCCESS, alias, command));
             }
             throw new CommandException(String.format(MESSAGE_ADD_CONFLICT, alias));

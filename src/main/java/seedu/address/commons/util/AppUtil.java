@@ -41,6 +41,13 @@ public class AppUtil {
             }
             logger.log(Level.SEVERE, "Unexpected failure loading image '" + imagePath + "' from URL: " + url, e);
             throw e;
+        } catch (LinkageError e) {
+            if (isJavaFxUnavailable(e)) {
+                logger.warning("JavaFX unavailable; cannot load image '" + imagePath + "': " + e.getMessage());
+                return null;
+            }
+            logger.log(Level.SEVERE, "Unexpected failure loading image '" + imagePath + "' from URL: " + url, e);
+            throw e;
         }
     }
 

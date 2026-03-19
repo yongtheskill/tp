@@ -34,7 +34,11 @@ public class SampleDataUtilTest {
     @Test
     public void getSampleAddressBook_containsAllSamplePersons() {
         ReadOnlyAddressBook sample = SampleDataUtil.getSampleAddressBook();
-        assertEquals(SampleDataUtil.getSamplePersons().length, sample.getPersonList().size());
+        Person[] expected = SampleDataUtil.getSamplePersons();
+        assertEquals(expected.length, sample.getPersonList().size());
+        for (Person person : expected) {
+            assertTrue(sample.getPersonList().contains(person));
+        }
     }
 
     @Test

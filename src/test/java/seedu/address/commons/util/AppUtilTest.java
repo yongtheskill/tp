@@ -21,7 +21,7 @@ public class AppUtilTest {
         String iconPath = "/images/address_book_32.png";
         var image = assertDoesNotThrow(() -> AppUtil.getImage(iconPath));
         Assumptions.assumeTrue(image != null, "Image not loadable (missing resource or JavaFX unavailable)");
-        assertTrue(image.getWidth() > 0 || image.getHeight() > 0);
+        assertTrue(image.getWidth() > 0 && image.getHeight() > 0);
     }
 
     @Test

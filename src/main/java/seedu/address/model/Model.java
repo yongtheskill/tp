@@ -13,6 +13,8 @@ import seedu.address.model.person.Person;
 public interface Model {
     /** {@code Predicate} that always evaluate to true */
     Predicate<Person> PREDICATE_SHOW_ALL_PERSONS = unused -> true;
+    /** {@code Predicate} that shows only non-archived persons. */
+    Predicate<Person> PREDICATE_SHOW_NON_ARCHIVED_PERSONS = person -> !person.isArchived();
 
     /**
      * Replaces user prefs data with the data in {@code userPrefs}.

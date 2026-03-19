@@ -19,7 +19,12 @@ public class AliasCommand extends Command {
     public static final String MESSAGE_REMOVE_FAIL = "Alias '%s' not found.";
     public static final String MESSAGE_LIST = "Aliases:\n%s";
 
-    private static AliasRegistry aliasRegistry = new AliasRegistry();
+    private static final AliasRegistry aliasRegistry = new AliasRegistry();
+
+    /** Returns the shared alias registry used by the application. */
+    public static AliasRegistry getAliasRegistry() {
+        return aliasRegistry;
+    }
 
     private final String action;
     private final String alias;

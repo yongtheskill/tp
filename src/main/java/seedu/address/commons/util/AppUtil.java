@@ -2,6 +2,7 @@ package seedu.address.commons.util;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +15,8 @@ import seedu.address.commons.core.LogsCenter;
  */
 public class AppUtil {
     private static final Logger logger = LogsCenter.getLogger(AppUtil.class);
+    private static final Function<String, Image> DEFAULT_IMAGE_LOADER = Image::new;
+    private static volatile Function<String, Image> imageLoader = DEFAULT_IMAGE_LOADER;
 
     /**
      * Gets an {@code Image} from the specified path.
@@ -30,7 +33,7 @@ public class AppUtil {
             return null;
         }
         try {
-            return new Image(url.toExternalForm());
+            return imageLoader.apply(url.toExternalForm());
         } catch (IllegalArgumentException e) {
             logger.warning("Invalid image URL for resource '" + imagePath + "': " + url + ". " + e.getMessage());
             return null;
@@ -49,6 +52,14 @@ public class AppUtil {
             logger.log(Level.SEVERE, "Unexpected failure loading image '" + imagePath + "' from URL: " + url, e);
             throw e;
         }
+    }
+
+    static void setImageLoaderForTesting(Function<String, Image> loader) {
+        imageLoader = requireNonNull(loader);
+    }
+
+    static void resetImageLoaderForTesting() {
+        imageLoader = DEFAULT_IMAGE_LOADER;
     }
 
     /*

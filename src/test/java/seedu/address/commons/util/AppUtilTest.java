@@ -2,6 +2,7 @@ package seedu.address.commons.util;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
@@ -22,6 +23,80 @@ public class AppUtilTest {
         var image = assertDoesNotThrow(() -> AppUtil.getImage(iconPath));
         Assumptions.assumeTrue(image != null, "Image not loadable (missing resource or JavaFX unavailable)");
         assertTrue(image.getWidth() > 0 && image.getHeight() > 0);
+    }
+
+    @Test
+    public void getImage_resourceExists_illegalArgumentException_returnsNull() {
+        String iconPath = "/images/address_book_32.png";
+        AppUtil.setImageLoaderForTesting(unused -> {
+            throw new IllegalArgumentException("bad url");
+        });
+        try {
+            var image = assertDoesNotThrow(() -> AppUtil.getImage(iconPath));
+            assertNull(image);
+        } finally {
+            AppUtil.resetImageLoaderForTesting();
+        }
+    }
+
+    @Test
+    public void getImage_resourceExists_runtimeException_dueToJavaFxUnavailable_returnsNull() {
+        String iconPath = "/images/address_book_32.png";
+        AppUtil.setImageLoaderForTesting(unused -> {
+            throw new RuntimeException("No toolkit found");
+        });
+        try {
+            var image = assertDoesNotThrow(() -> AppUtil.getImage(iconPath));
+            assertNull(image);
+        } finally {
+            AppUtil.resetImageLoaderForTesting();
+        }
+    }
+
+    @Test
+    public void getImage_resourceExists_runtimeException_unexpected_rethrows() {
+        String iconPath = "/images/address_book_32.png";
+        RuntimeException expected = new RuntimeException("boom");
+        AppUtil.setImageLoaderForTesting(unused -> {
+            throw expected;
+        });
+        try {
+            RuntimeException actual = org.junit.jupiter.api.Assertions.assertThrows(
+                    RuntimeException.class, () -> AppUtil.getImage(iconPath));
+            assertSame(expected, actual);
+        } finally {
+            AppUtil.resetImageLoaderForTesting();
+        }
+    }
+
+    @Test
+    public void getImage_resourceExists_linkageError_dueToJavaFxUnavailable_returnsNull() {
+        String iconPath = "/images/address_book_32.png";
+        AppUtil.setImageLoaderForTesting(unused -> {
+            throw new LinkageError("Graphics Device initialization failed");
+        });
+        try {
+            var image = assertDoesNotThrow(() -> AppUtil.getImage(iconPath));
+            assertNull(image);
+        } finally {
+            AppUtil.resetImageLoaderForTesting();
+        }
+    }
+
+    @Test
+    public void getImage_resourceExists_linkageError_unexpected_rethrows() {
+        String iconPath = "/images/address_book_32.png";
+        LinkageError expected = new LinkageError("boom");
+        AppUtil.setImageLoaderForTesting(unused -> {
+            throw expected;
+        });
+        try {
+            LinkageError actual = org.junit.jupiter.api.Assertions.assertThrows(
+                    LinkageError.class, () -> AppUtil.getImage(iconPath));
+            assertSame(expected, actual);
+        } finally {
+            AppUtil.resetImageLoaderForTesting();
+        }
     }
 
     @Test

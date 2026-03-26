@@ -14,7 +14,6 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 <img src="images/yongtheskill.png" alt="Yong ee profile photo" width="200px">
 
 [[GitHub](https://github.com/yongtheskill)]
-[[portfolio](team/johndoe.md)]
 
 - Role: Developer
 
@@ -22,8 +21,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 <img src="images/ashw1ng.png" alt="Ashwin Govind profile photo" width="200px">
 
-[[GitHub](http://github.com/ashw1ng)]
-[[portfolio](team/johndoe.md)]
+[[GitHub](https://github.com/ashw1ng)]
 
 - Role: Developer
 - Responsibilities: UI
@@ -32,7 +30,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 <img src="images/yonktheskill.png" alt="Tan Hong Xu profile photo" width="200px">
 
-[[GitHub](http://github.com/yonktheskill)] [[portfolio](team/tanhongxu.md)]
+[[GitHub](https://github.com/yonktheskill)] [[portfolio](team/tanhongxu.md)]
 
 - Role: Developer
 - Responsibilities: Data
@@ -41,8 +39,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 <img src="images/aldenngsk.png" alt="Ng Shu Kai Alden profile photo" width="200px">
 
-[[GitHub](http://github.com/aldenngsk)]
-[[portfolio](team/johndoe.md)]
+[[GitHub](https://github.com/aldenngsk)]
 
 - Role: Developer
 - Responsibilities: Dev Ops + Threading
@@ -51,8 +48,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 <img src="images/evananann.png" alt="Ng Xiang En Evan profile photo" width="200px">
 
-[[GitHub](http://github.com/evananann)]
-[[portfolio](team/johndoe.md)]
+[[GitHub](https://github.com/evananann)]
 
 - Role: Developer
 - Responsibilities: UI

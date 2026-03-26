@@ -2,6 +2,7 @@ package seedu.address.model.person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -13,6 +14,12 @@ import org.junit.jupiter.api.Test;
 import seedu.address.testutil.PersonBuilder;
 
 public class TagContainsKeywordsPredicateTest {
+
+    @Test
+    public void constructor_nullKeyword_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new TagContainsKeywordsPredicate(
+                Arrays.asList("friends", null)));
+    }
 
     @Test
     public void equals() {

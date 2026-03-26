@@ -44,6 +44,10 @@ public class PersonCardTest {
         } catch (UnsupportedOperationException e) {
             startupThrowable.set(e);
             latch.countDown();
+        } catch (RuntimeException e) {
+            // JavaFX initialization may fail in environments without GUI support.
+            startupThrowable.set(e);
+            latch.countDown();
         }
         assertTrue(latch.await(FX_TIMEOUT_SECONDS, TimeUnit.SECONDS), "Timed out waiting for JavaFX toolkit startup.");
         Throwable throwable = startupThrowable.get();

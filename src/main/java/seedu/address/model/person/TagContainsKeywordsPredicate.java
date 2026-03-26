@@ -4,8 +4,11 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import seedu.address.commons.util.ToStringBuilder;
 
@@ -22,6 +25,7 @@ public class TagContainsKeywordsPredicate implements Predicate<Person> {
      */
     public TagContainsKeywordsPredicate(List<String> keywords) {
         requireNonNull(keywords);
+        keywords.forEach(Objects::requireNonNull);
         this.keywords = new ArrayList<>(keywords);
     }
 
@@ -36,10 +40,13 @@ public class TagContainsKeywordsPredicate implements Predicate<Person> {
     @Override
     public boolean test(Person person) {
         requireNonNull(person);
+        // Case-insensitive tag matching: normalize person tags once per predicate evaluation.
+        Set<String> personTagNamesLowercase = person.getTags().stream()
+                .map(tag -> tag.tagName.toLowerCase(Locale.ROOT))
+                .collect(Collectors.toSet());
+
         return keywords.stream()
-                .anyMatch(keyword -> person.getTags().stream()
-                        .map(tag -> tag.tagName)
-                        .anyMatch(tagName -> tagName.equalsIgnoreCase(keyword)));
+                .anyMatch(keyword -> personTagNamesLowercase.contains(keyword.toLowerCase(Locale.ROOT)));
     }
 
     /**

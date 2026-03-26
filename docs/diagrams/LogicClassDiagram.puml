@@ -40,6 +40,9 @@ Storage --[hidden] Model
 Command .[hidden]up.> Storage
 Command .right.> Model
 note right of XYZCommand: XYZCommand = AddCommand, \nFindCommand, etc
+note right of LogicManager
+	Orchestrates parsing and command execution.
+end note
 
 Logic ..> CommandResult
 LogicManager .down.> CommandResult

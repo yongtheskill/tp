@@ -12,7 +12,7 @@ Given below are my contributions to the project.
 - **New Feature**: Added the ability to undo/redo previous commands.
     - What it does: allows the user to undo all previous commands one at a time. Preceding undo commands can be reversed by using the redo command.
     - Justification: This feature improves the product significantly because a user can make mistakes in commands and the app should provide a convenient way to rectify them.
-    - Highlights: This enhancement affects existing commands and commands to be added in the future. It required an in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.
+    - Highlights: This enhancement affects existing commands and commands to be added in future. It required an in-depth analysis of design alternatives. The implementation too was challenging as it required changes to existing commands.
 
 - **New Feature**: Added a history command that allows the user to navigate to previous commands using up/down keys.
 
@@ -41,3 +41,4 @@ Given below are my contributions to the project.
 - **Tools**:
     - Integrated a third-party library (Natty) to the project ([#42](https://github.com/AY2526S2-CS2103T-T17-2/tp/pull/42))
     - Integrated a new GitHub plugin (CircleCI) to the team repo
+

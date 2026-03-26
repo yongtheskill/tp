@@ -1,6 +1,7 @@
 * text=auto
 
 *.bat text eol=crlf
+gradlew.bat text eol=crlf
 *.css text eol=lf
 *.fxml text eol=lf
 *.gradle text eol=lf

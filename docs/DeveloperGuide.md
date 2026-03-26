@@ -30,7 +30,7 @@ Refer to the guide [_Setting up and getting started_](SettingUp.md).
 
 ### Architecture
 
-<img src="images/ArchitectureDiagram.png" width="280" />
+<img src="images/ArchitectureDiagram.png" alt="Architecture diagram showing Main, UI, Logic, Model, and Storage components" width="280" />
 
 The **_Architecture Diagram_** given above explains the high-level design of the App.
 
@@ -56,7 +56,7 @@ The bulk of the app's work is done by the following four components:
 
 The _Sequence Diagram_ below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
 
-<img src="images/ArchitectureSequenceDiagram.png" width="574" />
+<img src="images/ArchitectureSequenceDiagram.png" alt="Sequence diagram for delete command interactions across architecture components" width="574" />
 
 Each of the four main components (also shown in the diagram above),
 
@@ -65,7 +65,7 @@ Each of the four main components (also shown in the diagram above),
 
 For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside component's being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
 
-<img src="images/ComponentManagers.png" width="300" />
+<img src="images/ComponentManagers.png" alt="Class diagram of manager classes implementing component interfaces" width="300" />
 
 The sections below give more details of each component.
 
@@ -92,7 +92,7 @@ The `UI` component,
 
 Here's a (partial) class diagram of the `Logic` component:
 
-<img src="images/LogicClassDiagram.png" width="550"/>
+<img src="images/LogicClassDiagram.png" alt="Logic component class diagram" width="550"/>
 
 The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
 
@@ -111,7 +111,7 @@ How the `Logic` component works:
 
 Here are the other classes in `Logic` (omitted from the class diagram above) that are used for parsing a user command:
 
-<img src="images/ParserClasses.png" width="600"/>
+<img src="images/ParserClasses.png" alt="Parser class relationships in the logic component" width="600"/>
 
 How the parsing works:
 
@@ -122,7 +122,7 @@ How the parsing works:
 
 **API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
 
-<img src="images/ModelClassDiagram.png" width="450" />
+<img src="images/ModelClassDiagram.png" alt="Model component class diagram" width="450" />
 
 The `Model` component,
 
@@ -133,7 +133,7 @@ The `Model` component,
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AddressBook`, which `Person` references. This allows `AddressBook` to only require one `Tag` object per unique tag, instead of each `Person` needing their own `Tag` objects.<br>
 
-<img src="images/BetterModelClassDiagram.png" width="450" />
+<img src="images/BetterModelClassDiagram.png" alt="Alternative model class diagram with shared tags" width="450" />
 
 </div>
 
@@ -141,7 +141,7 @@ The `Model` component,
 
 **API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
 
-<img src="images/StorageClassDiagram.png" width="550" />
+<img src="images/StorageClassDiagram.png" alt="Storage component class diagram" width="550" />
 
 The `Storage` component,
 
@@ -252,7 +252,7 @@ Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Sinc
 
 The following activity diagram summarizes what happens when a user executes a new command:
 
-<img src="images/CommitActivityDiagram.png" width="250" />
+<img src="images/CommitActivityDiagram.png" alt="Activity diagram for command commit flow" width="250" />
 
 #### Design considerations:
 

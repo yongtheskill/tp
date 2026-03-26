@@ -1,6 +1,5 @@
 package seedu.address.model.person;
 
-import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Collections;
@@ -13,7 +12,7 @@ import seedu.address.model.tag.Tag;
 
 /**
  * Represents a Person in the address book.
- * Guarantees: name, phone, email, remark and tags are present and not null; address is optional.
+ * Guarantees: details are present and not null, field values are validated, immutable.
  */
 public class Person {
 
@@ -23,83 +22,49 @@ public class Person {
     private final Email email;
 
     // Data fields
-    private final Address address; // optional - may be null
+    private final Address address;
     private final Remark remark;
     private final boolean isArchived;
+    private final boolean isStarred;
     private final Set<Tag> tags = new HashSet<>();
-    private final boolean starred;
 
     /**
-     * Creates a Person with all fields including address.
-     * Address may be {@code null} to indicate it was not provided.
+     * Every field must be present and not null.
      */
     public Person(Name name, Phone phone, Email email, Address address, Remark remark, Set<Tag> tags) {
         this(name, phone, email, address, remark, false, tags, false);
     }
 
     /**
-     * Creates a Person with all fields including address and starred state.
-     * Address may be {@code null} to indicate it was not provided.
-     */
-    public Person(Name name, Phone phone, Email email, Address address, Remark remark, Set<Tag> tags,
-            boolean starred) {
-        this(name, phone, email, address, remark, false, tags, starred);
-    }
-
-    /**
-     * Creates a Person with all fields including address and archived state.
-     * Address may be {@code null} to indicate it was not provided.
+     * Every field must be present and not null.
      */
     public Person(Name name, Phone phone, Email email, Address address, Remark remark,
-            boolean isArchived, Set<Tag> tags) {
+                  boolean isArchived, Set<Tag> tags) {
         this(name, phone, email, address, remark, isArchived, tags, false);
     }
 
     /**
-     * Creates a Person with all fields including address, archived state, and starred state.
-     * Address may be {@code null} to indicate it was not provided.
+     * Every field must be present and not null except address, which can be null.
      */
     public Person(Name name, Phone phone, Email email, Address address, Remark remark,
-            boolean isArchived, Set<Tag> tags, boolean starred) {
+                  Set<Tag> tags, boolean isStarred) {
+        this(name, phone, email, address, remark, false, tags, isStarred);
+    }
+
+    /**
+     * Every field must be present and not null except address, which can be null.
+     */
+    public Person(Name name, Phone phone, Email email, Address address, Remark remark,
+                  boolean isArchived, Set<Tag> tags, boolean isStarred) {
         requireAllNonNull(name, phone, email, remark, tags);
-        requireNonNull(name);
         this.name = name;
         this.phone = phone;
         this.email = email;
-        this.address = address; // nullable
+        this.address = address;
         this.remark = remark;
         this.isArchived = isArchived;
+        this.isStarred = isStarred;
         this.tags.addAll(tags);
-        this.starred = starred;
-    }
-
-    /**
-     * Creates a Person without an address (address defaults to {@code null}).
-     */
-    public Person(Name name, Phone phone, Email email, Remark remark, Set<Tag> tags) {
-        this(name, phone, email, null, remark, tags);
-    }
-
-    /**
-     * Creates a Person without an address and with a specific starred state.
-     */
-    public Person(Name name, Phone phone, Email email, Remark remark, Set<Tag> tags, boolean starred) {
-        this(name, phone, email, null, remark, tags, starred);
-    }
-
-    /**
-     * Creates a Person without an address and with a specific archived state.
-     */
-    public Person(Name name, Phone phone, Email email, Remark remark, boolean isArchived, Set<Tag> tags) {
-        this(name, phone, email, null, remark, isArchived, tags);
-    }
-
-    /**
-     * Creates a Person without an address and with specific archived and starred states.
-     */
-    public Person(Name name, Phone phone, Email email, Remark remark,
-            boolean isArchived, Set<Tag> tags, boolean starred) {
-        this(name, phone, email, null, remark, isArchived, tags, starred);
     }
 
     public Name getName() {
@@ -114,17 +79,10 @@ public class Person {
         return email;
     }
 
-    /**
-     * Returns the address, or {@code null} if no address was provided.
-     * Callers should check {@link #hasAddress()} before using this value.
-     */
     public Address getAddress() {
         return address;
     }
 
-    /**
-     * Returns true if this person has an address set.
-     */
     public boolean hasAddress() {
         return address != null;
     }
@@ -133,32 +91,19 @@ public class Person {
         return remark;
     }
 
-    /**
-     * Returns true if this person is archived.
-     */
     public boolean isArchived() {
         return isArchived;
+    }
+
+    public boolean isStarred() {
+        return isStarred;
     }
 
     /**
      * Returns a copy of this person with the given archived state.
      */
     public Person withArchived(boolean archived) {
-        return new Person(name, phone, email, address, remark, archived, tags, starred);
-    }
-
-    /**
-     * Returns true if this person is starred.
-     */
-    public boolean isStarred() {
-        return starred;
-    }
-
-    /**
-     * Returns a copy of this person with the given starred state.
-     */
-    public Person withStarred(boolean starred) {
-        return new Person(name, phone, email, address, remark, isArchived, tags, starred);
+        return new Person(name, phone, email, address, remark, archived, tags, isStarred);
     }
 
     /**
@@ -201,17 +146,17 @@ public class Person {
         return name.equals(otherPerson.name)
                 && phone.equals(otherPerson.phone)
                 && email.equals(otherPerson.email)
-                && Objects.equals(address, otherPerson.address)
+            && Objects.equals(address, otherPerson.address)
                 && remark.equals(otherPerson.remark)
                 && isArchived == otherPerson.isArchived
-                && tags.equals(otherPerson.tags)
-                && starred == otherPerson.starred;
+            && isStarred == otherPerson.isStarred
+                && tags.equals(otherPerson.tags);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, remark, isArchived, tags, starred);
+        return Objects.hash(name, phone, email, address, remark, isArchived, isStarred, tags);
     }
 
     @Override
@@ -223,8 +168,8 @@ public class Person {
                 .add("address", address)
                 .add("remark", remark)
                 .add("isArchived", isArchived)
+                .add("isStarred", isStarred)
                 .add("tags", tags)
-                .add("starred", starred)
                 .toString();
     }
 

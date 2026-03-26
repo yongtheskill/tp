@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.AddCommand;
-import seedu.address.logic.commands.AliasCommand;
 import seedu.address.logic.commands.ArchiveCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
@@ -22,9 +21,7 @@ import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.RemarkCommand;
 import seedu.address.logic.commands.SortCommand;
-import seedu.address.logic.commands.StarCommand;
 import seedu.address.logic.commands.UnarchiveCommand;
-import seedu.address.logic.commands.UnstarCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
@@ -37,10 +34,6 @@ public class AddressBookParser {
      */
     private static final Pattern BASIC_COMMAND_FORMAT = Pattern.compile("(?<commandWord>\\S+)(?<arguments>.*)");
     private static final Logger logger = LogsCenter.getLogger(AddressBookParser.class);
-
-    // Use the same registry as AliasCommand so that aliases persist across command
-    // executions.
-    private final AliasRegistry aliasRegistry = AliasCommand.getAliasRegistry();
 
     /**
      * Parses user input into command for execution.
@@ -55,22 +48,16 @@ public class AddressBookParser {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE));
         }
 
-        String commandWord = matcher.group("commandWord");
+        final String commandWord = matcher.group("commandWord");
         final String arguments = matcher.group("arguments");
 
-        // Resolve alias
-        String resolvedCommand = aliasRegistry.getCommandWord(commandWord);
-        if (resolvedCommand != null) {
-            commandWord = resolvedCommand;
-        }
-
-        // Note to developers: Change the log level in config.json to enable lower level
-        // (i.e., FINE, FINER and lower)
+        // Note to developers: Change the log level in config.json to enable lower level (i.e., FINE, FINER and lower)
         // log messages such as the one below.
         // Lower level log messages are used sparingly to minimize noise in the code.
         logger.fine("Command word: " + commandWord + "; Arguments: " + arguments);
 
         switch (commandWord) {
+
         case AddCommand.COMMAND_WORD:
             return new AddCommandParser().parse(arguments);
 
@@ -82,12 +69,6 @@ public class AddressBookParser {
 
         case DeleteCommand.COMMAND_WORD:
             return new DeleteCommandParser().parse(arguments);
-
-        case StarCommand.COMMAND_WORD:
-            return new StarCommandParser().parse(arguments);
-
-        case UnstarCommand.COMMAND_WORD:
-            return new UnstarCommandParser().parse(arguments);
 
         case ClearCommand.COMMAND_WORD:
             return new ClearCommand();
@@ -118,9 +99,6 @@ public class AddressBookParser {
 
         case UnarchiveCommand.COMMAND_WORD:
             return new UnarchiveCommandParser().parse(arguments);
-
-        case AliasCommand.COMMAND_WORD:
-            return new AliasCommandParser().parse(arguments);
 
         default:
             logger.finer("This user input caused a ParseException: " + userInput);

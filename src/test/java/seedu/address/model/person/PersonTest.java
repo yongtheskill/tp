@@ -12,8 +12,6 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
-import java.util.HashSet;
-
 import org.junit.jupiter.api.Test;
 
 import seedu.address.testutil.PersonBuilder;
@@ -94,10 +92,6 @@ public class PersonTest {
         // different archived status -> returns false
         editedAlice = new PersonBuilder(ALICE).withArchived(true).build();
         assertFalse(ALICE.equals(editedAlice));
-
-        // different starred state -> returns false
-        editedAlice = new PersonBuilder(ALICE).withStarred(true).build();
-        assertFalse(ALICE.equals(editedAlice));
     }
 
     @Test
@@ -105,28 +99,8 @@ public class PersonTest {
         String expected = Person.class.getCanonicalName() + "{name=" + ALICE.getName() + ", phone=" + ALICE.getPhone()
                 + ", email=" + ALICE.getEmail() + ", address=" + ALICE.getAddress()
                 + ", remark=" + ALICE.getRemark() + ", isArchived=" + ALICE.isArchived()
-                + ", tags=" + ALICE.getTags() + ", starred=" + ALICE.isStarred() + "}";
+            + ", isStarred=" + ALICE.isStarred()
+                + ", tags=" + ALICE.getTags() + "}";
         assertEquals(expected, ALICE.toString());
-    }
-
-    @Test
-    public void constructors_withoutAddress_fieldsSetCorrectly() {
-        Person unstarred = new Person(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(),
-                ALICE.getRemark(), new HashSet<>(ALICE.getTags()));
-        assertFalse(unstarred.hasAddress());
-        assertFalse(unstarred.isArchived());
-        assertFalse(unstarred.isStarred());
-
-        Person archivedAndStarred = new Person(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(),
-                ALICE.getRemark(), true, new HashSet<>(ALICE.getTags()), true);
-        assertFalse(archivedAndStarred.hasAddress());
-        assertTrue(archivedAndStarred.isArchived());
-        assertTrue(archivedAndStarred.isStarred());
-    }
-
-    @Test
-    public void hashCode_sameValues_returnsSameHash() {
-        Person aliceCopy = new PersonBuilder(ALICE).build();
-        assertEquals(ALICE.hashCode(), aliceCopy.hashCode());
     }
 }

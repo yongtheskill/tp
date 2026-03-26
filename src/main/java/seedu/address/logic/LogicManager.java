@@ -3,6 +3,7 @@ package seedu.address.logic;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.collections.ObservableList;
@@ -53,8 +54,14 @@ public class LogicManager implements Logic {
         try {
             storage.saveAddressBook(model.getAddressBook());
         } catch (AccessDeniedException e) {
-            throw new CommandException(String.format(FILE_OPS_PERMISSION_ERROR_FORMAT, e.getMessage()), e);
+            logger.log(Level.WARNING,
+                    "Address book save failed due to insufficient permissions for file: "
+                            + model.getAddressBookFilePath(),
+                    e);
+            throw new CommandException(String.format(FILE_OPS_PERMISSION_ERROR_FORMAT,
+                    model.getAddressBookFilePath()), e);
         } catch (IOException ioe) {
+            logger.log(Level.WARNING, "Address book save failed due to I/O error", ioe);
             throw new CommandException(String.format(FILE_OPS_ERROR_FORMAT, ioe.getMessage()), ioe);
         }
 

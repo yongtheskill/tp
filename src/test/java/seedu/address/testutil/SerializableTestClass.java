@@ -2,8 +2,10 @@ package seedu.address.testutil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A class used to test serialization and deserialization
@@ -26,7 +28,7 @@ public class SerializableTestClass {
     private String name;
 
     private List<LocalDateTime> listOfLocalDateTimes;
-    private HashMap<Integer, String> mapOfIntegerToString;
+    private Map<Integer, String> mapOfIntegerToString;
 
     public static String getNameTestValue() {
         return NAME_TEST_VALUE;
@@ -42,7 +44,7 @@ public class SerializableTestClass {
         return listOfLocalDateTimes;
     }
 
-    public static HashMap<Integer, String> getHashMapTestValues() {
+    public static Map<Integer, String> getHashMapTestValues() {
         HashMap<Integer, String> mapOfIntegerToString = new HashMap<>();
 
         mapOfIntegerToString.put(1, "One");
@@ -63,10 +65,16 @@ public class SerializableTestClass {
     }
 
     public List<LocalDateTime> getListOfLocalDateTimes() {
-        return listOfLocalDateTimes;
+        if (listOfLocalDateTimes == null) {
+            return Collections.emptyList();
+        }
+        return new ArrayList<>(listOfLocalDateTimes);
     }
 
-    public HashMap<Integer, String> getMapOfIntegerToString() {
-        return mapOfIntegerToString;
+    public Map<Integer, String> getMapOfIntegerToString() {
+        if (mapOfIntegerToString == null) {
+            return Collections.emptyMap();
+        }
+        return new HashMap<>(mapOfIntegerToString);
     }
 }

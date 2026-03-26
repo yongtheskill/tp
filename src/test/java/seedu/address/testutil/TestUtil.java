@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javafx.collections.ObservableList;
 import seedu.address.commons.core.index.Index;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
@@ -36,14 +37,23 @@ public class TestUtil {
      * Returns the middle index of the person in the {@code model}'s person list.
      */
     public static Index getMidIndex(Model model) {
-        return Index.fromOneBased(model.getFilteredPersonList().size() / 2);
+        ObservableList<Person> filteredPersonList = model.getFilteredPersonList();
+        if (filteredPersonList.isEmpty()) {
+            throw new IllegalArgumentException("filtered person list must not be empty");
+        }
+        int oneBasedMiddleIndex = (filteredPersonList.size() + 1) / 2;
+        return Index.fromOneBased(oneBasedMiddleIndex);
     }
 
     /**
      * Returns the last index of the person in the {@code model}'s person list.
      */
     public static Index getLastIndex(Model model) {
-        return Index.fromOneBased(model.getFilteredPersonList().size());
+        ObservableList<Person> filteredPersonList = model.getFilteredPersonList();
+        if (filteredPersonList.isEmpty()) {
+            throw new IllegalArgumentException("filtered person list must not be empty");
+        }
+        return Index.fromOneBased(filteredPersonList.size());
     }
 
     /**

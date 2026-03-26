@@ -42,4 +42,9 @@ public class TestFxmlObject {
         return Objects.equals(text, otherTestFxmlObject.text);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(text);
+    }
+
 }

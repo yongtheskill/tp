@@ -1,5 +1,7 @@
 package seedu.address.commons.util;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Builds a string representation of an object that is suitable as the return value of {@link Object#toString()}.
  */
@@ -16,7 +18,7 @@ public class ToStringBuilder {
      * Constructs a {@code ToStringBuilder} whose formatted output will be prefixed with {@code objectName}.
      */
     public ToStringBuilder(String objectName) {
-        stringBuilder.append(objectName).append(OBJECT_PREFIX);
+        stringBuilder.append(requireNonNull(objectName, "objectName must not be null")).append(OBJECT_PREFIX);
     }
 
     /**
@@ -24,7 +26,13 @@ public class ToStringBuilder {
      * canonical class name of {@code object}.
      */
     public ToStringBuilder(Object object) {
-        this(object.getClass().getCanonicalName());
+        this(getClassName(object));
+    }
+
+    private static String getClassName(Object object) {
+        Class<?> clazz = requireNonNull(object, "object must not be null").getClass();
+        String canonicalName = clazz.getCanonicalName();
+        return canonicalName != null ? canonicalName : clazz.getName();
     }
 
     /**
@@ -35,6 +43,7 @@ public class ToStringBuilder {
      * @return A reference to this {@code ToStringBuilder} object, allowing method calls to be chained.
      */
     public ToStringBuilder add(String fieldName, Object fieldValue) {
+        requireNonNull(fieldName, "fieldName must not be null");
         if (hasField) {
             stringBuilder.append(FIELD_SEPARATOR);
         }

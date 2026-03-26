@@ -2,7 +2,7 @@
 # Checks for prohibited line endings.
 # Prohibited line endings: \r\n
 
-git grep --cached -I -n --no-color -P '\r$' -- ':/' |
+git grep --cached -I -n --no-color -P '\r$' -- ':/' ':(exclude)*.bat' ':(exclude)gradlew.bat' |
 awk '
     BEGIN {
         FS = ":"

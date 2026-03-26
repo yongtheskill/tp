@@ -30,7 +30,7 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 <img src="images/yonktheskill.png" alt="Tan Hong Xu profile photo" width="200px">
 
-[[GitHub](https://github.com/yonktheskill)] [[portfolio](team/tanhongxu.md)]
+[[GitHub](https://github.com/yonktheskill)] [[portfolio](team/johndoe.md)]
 
 - Role: Developer
 - Responsibilities: Data

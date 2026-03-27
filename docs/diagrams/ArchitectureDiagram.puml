@@ -27,6 +27,11 @@ Main -[#grey]-> Storage
 Main -up[#grey]-> Model
 Main -down[hidden]-> Commons
 
+UI .down[UI_COLOR].> Commons
+Logic .down[LOGIC_COLOR].> Commons
+Model .down[MODEL_COLOR].> Commons
+Storage .down[STORAGE_COLOR].> Commons
+
 Storage -up[STORAGE_COLOR].> Model
 Storage .right[STORAGE_COLOR].>File
 User ..> UI

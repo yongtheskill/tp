@@ -21,6 +21,8 @@ You've got this!
 
 This guide is written for **Computer Science students at all levels**, from those who have never opened a terminal before to those who use one every day.
 
+As a CS student, your contact list grows fast — TAs from every module, groupmates for lab projects, seniors who can refer you for internships, and industry contacts from hackathons and tech talks. PingBook is built specifically to help you keep all of these organised in one place, without slowing you down with mouse-heavy menus. If you can type quickly, it is faster than any phone app or spreadsheet.
+
 If you are new to command-line tools, everything is explained from scratch. If you are already experienced, the [Command Summary](#command-summary) and per-feature sections are quick to scan.
 
 The only hard requirement: you can open files and folders on your computer and type on a keyboard. Everything else is covered here.
@@ -68,11 +70,13 @@ The only hard requirement: you can open files and folders on your computer and t
 
 ## Product Description
 
-PingBook is a desktop application for managing contacts quickly using typed commands.
+PingBook is a desktop application built for CS students who need to manage a growing network of contacts quickly and without friction.
 
-You can add, edit, search, organise, and archive contacts without ever touching the mouse. Starred contacts appear at the top of your list, archived contacts stay out of sight until you need them, and command aliases let you create shortcuts for the commands you use most.
+As your semesters progress, your contact list grows: TAs from every module, teammates from lab projects, seniors who can refer you for internships, and industry contacts from hackathons and tech talks. PingBook lets you add, edit, search, organise, and archive all of these contacts using short typed commands — no mouse required.
 
-If you can type quickly, PingBook lets you manage hundreds of contacts faster than any click-based app.
+Starred contacts float to the top of your list. Archived contacts stay hidden until you need them. Command aliases let you define personal shortcuts for the commands you use most.
+
+If you can type quickly — and as a CS student, you probably can — PingBook lets you manage hundreds of contacts faster than any click-based app.
 
 [↑ Back to Table of Contents](#table-of-contents)
 
@@ -144,7 +148,7 @@ Before diving in, here are the technical terms you will encounter in this guide.
 
 ## Quick Start
 
-This section walks you through installing and launching PingBook for the first time. Follow the steps for your operating system (**Windows** or **macOS**).
+This section walks you through installing and launching PingBook for the first time. Follow the steps for your operating system (**Windows**, **macOS**, or **Linux**).
 
 ### Step 1: Open your terminal
 
@@ -167,7 +171,13 @@ Your **terminal** is the text window where you type commands. Here is how to ope
 
 > Alternatively, open **Finder**, go to **Applications → Utilities**, and double-click **Terminal**.
 
-You will see a prompt like `C:\Users\yourname>` (Windows) or `yourname@MacBook ~ %` (macOS). This is normal; it means the terminal is ready for your input.
+##### On Linux
+
+1. Press **Ctrl + Alt + T** to open a terminal directly (this shortcut works on most distributions such as Ubuntu).
+2. Alternatively, search your application launcher for "Terminal" or "Bash."
+3. A text window opens. This is your terminal.
+
+You will see a prompt like `C:\Users\yourname>` (Windows), `yourname@MacBook ~ %` (macOS), or `yourname@hostname:~$` (Linux). This is normal; it means the terminal is ready for your input.
 
 ### Step 2: Check Java is installed
 
@@ -196,10 +206,13 @@ Once installed, close and reopen your terminal, then run `java -version` again t
 
 1. Go to the [PingBook releases page](https://github.com/AY2526S2-CS2103T-T17-2/tp/releases) in your web browser.
 2. Under the latest release, click `pingbook.jar` to download it. This is the JAR file (the runnable application file) that contains PingBook.
-3. Create a new folder somewhere easy to remember, for example:
-   - **Windows:** `C:\Users\yourname\PingBook`
-   - **macOS:** `/Users/yourname/Documents/PingBook` (you can also just call it `PingBook` inside your Documents folder)
-4. Move `pingbook.jar` into that folder.
+3. Create a new folder somewhere easy to remember:
+   - **Windows:** Open **File Explorer**, navigate to where you want the folder (e.g. your Documents), right-click in an empty area, choose **New → Folder**, and name it `PingBook`. The full path might look like `C:\Users\yourname\PingBook`.
+   - **macOS/Linux:** Open **Finder** (macOS) or your file manager (Linux), navigate to a convenient location such as your Documents folder, right-click, choose **New Folder**, and name it `PingBook`. The full path might look like `/Users/yourname/Documents/PingBook`.
+
+   > **What does `/` (or `\`) mean in a path?** The `/` on macOS/Linux and `\` on Windows are separators between folder names. `/Users/yourname/Documents/PingBook` means: start at the root of the disk, go into `Users`, then `yourname`, then `Documents`, then `PingBook`.
+
+4. Move `pingbook.jar` into that folder. On most systems, you can drag and drop the downloaded file from your **Downloads** folder into the new `PingBook` folder.
 
 <div markdown="block" class="alert alert-info">
 💡 <strong>Why a dedicated folder?</strong> PingBook automatically creates a <code>data</code> folder next to <code>pingbook.jar</code> to save your contacts. Keeping <code>pingbook.jar</code> in its own folder keeps everything tidy.
@@ -241,7 +254,7 @@ You should see `pingbook.jar` in the list.
 
 ### Step 5: Launch the app
 
-With your terminal open and pointing to the PingBook folder, type the following and press **Enter**:
+With your terminal open and set to the PingBook folder (from Step 4 above), type the following and press **Enter**:
 
 ```shell
 java -jar pingbook.jar
@@ -286,7 +299,7 @@ Let's add your first contact to make sure everything is working.
 2. Type the following command exactly as shown, then press **Enter**:
 
    ```text
-   add n/Alex Tan p/91234567 e/alex@email.com
+   add n/Alex Tan p/91234567 e/alex@u.nus.edu
    ```
 
    Here, `n/` is the prefix for name, `p/` is the prefix for phone number, and `e/` is the prefix for email.
@@ -320,6 +333,8 @@ Here are the rules for reading command formats throughout this guide:
 
 ## Managing Contacts
 
+This section covers commands for creating, updating, and removing individual contacts — the core operations for building and maintaining your contact list.
+
 ### Adding a contact: `add`
 
 Add a new contact to your address book.
@@ -346,11 +361,11 @@ Each prefix (`n/`, `p/`, `e/`, etc.) tells PingBook what type of information fol
 
 <div markdown="block" class="alert alert-success example-block">
 <span class="example-label">📌 <strong>Example:</strong></span>
-<pre class="example-command">add n/Priya Sharma p/87654321 e/priya@company.com a/10 Orchard Road t/colleague</pre>
-This adds a contact named Priya Sharma with a phone number, email, address, and the tag "colleague."
+<pre class="example-command">add n/Priya Sharma p/87654321 e/priya@u.nus.edu a/COM1-0210 t/TA</pre>
+This adds a contact named Priya Sharma with a phone number, email, address, and the tag "TA."
 
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">New contact added: Priya Sharma; Phone: 87654321; Email: priya@company.com; Address: 10 Orchard Road; Tags: [colleague]</pre>
+<pre class="example-result">New contact added: Priya Sharma; Phone: 87654321; Email: priya@u.nus.edu; Address: COM1-0210; Tags: [TA] (8 contacts total)</pre>
 </div>
 
 <div markdown="block" class="alert alert-info">
@@ -377,7 +392,7 @@ Change one or more details of an existing contact.
 
 <div markdown="block" class="alert alert-success example-block">
 <span class="example-label">📌 <strong>Example: update phone and email for contact 3</strong></span>
-<pre class="example-command">edit 3 p/99887766 e/priya.new@company.com</pre>
+<pre class="example-command">edit 3 p/99887766 e/priya.sharma@u.nus.edu</pre>
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
 <pre class="example-result">Edited Person: Priya Sharma; Phone: 99887766; ...</pre>
 </div>
@@ -468,7 +483,7 @@ Show all your active (non-archived) contacts.
 
 <div markdown="block" class="alert alert-success example-block">
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">Listed active contacts and all active contacts appear in the list.</pre>
+<pre class="example-result">Listed active contacts and the full contact list appears.</pre>
 </div>
 
 [↑ Back to Table of Contents](#table-of-contents)
@@ -521,7 +536,7 @@ Show only the contacts that have a specific tag attached to them.
 <span class="example-label">📌 <strong>Example: show all contacts tagged "colleague" or "vip"</strong></span>
 <pre class="example-command">filter t/colleague t/vip</pre>
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">N persons listed! where N is the number of matching contacts.</pre>
+<pre class="example-result">2 persons listed! and the matching contacts appear in the list.</pre>
 </div>
 
 [↑ Back to Table of Contents](#table-of-contents)
@@ -545,6 +560,8 @@ Reorder your contact list so that starred contacts appear first, and all remaini
 [↑ Back to Table of Contents](#table-of-contents)
 
 ## Organising Contacts
+
+This section covers commands for categorising and grouping your contacts. Star your most important contacts so they always appear at the top of the list, and archive inactive ones to keep your main list uncluttered.
 
 ### Starring a contact: `star`
 
@@ -633,7 +650,7 @@ Move an archived contact back to your active list.
 <pre class="example-command">listarchived
 unarchive 1</pre>
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">The contact disappears from the archived list and reappears when you run list.</pre>
+<pre class="example-result">Unarchived Person: ... and the contact reappears when you run <code>list</code>.</pre>
 </div>
 
 [↑ Back to Table of Contents](#table-of-contents)
@@ -660,7 +677,7 @@ Show all contacts that have been archived.
 
 ### Creating command aliases: `alias`
 
-Create a personal shortcut word that triggers a built-in command. For example, you could create `a` as a shortcut for `add` so you type less.
+Create a personal shortcut word that triggers a built-in command. For example, you could create `e` as a shortcut for `edit` so you type less.
 
 ##### Format
 
@@ -679,19 +696,30 @@ Create a personal shortcut word that triggers a built-in command. For example, y
 2. Press **Enter**.
 
 <div markdown="block" class="alert alert-success example-block">
-<span class="example-label">📌 <strong>Example: create shortcut <code>a</code> for the <code>add</code> command</strong></span>
-<pre class="example-command">alias add a add</pre>
-After this, you can type <code>a n/Alex p/91234567 e/alex@email.com</code> instead of the full <code>add</code> command.
+<span class="example-label">📌 <strong>Example: create shortcut <code>e</code> for the <code>edit</code> command</strong></span>
+<pre class="example-command">alias add e edit</pre>
+After this, you can type <code>e 3 p/91234567</code> instead of the full <code>edit 3 p/91234567</code> command.
+
+<span class="example-result-label">✅ <strong>Expected result:</strong></span>
+<pre class="example-result">Alias 'e' added for command 'edit'.</pre>
 </div>
 
 <div markdown="block" class="alert alert-success example-block">
 <span class="example-label">📌 <strong>Example: see all your current shortcuts</strong></span>
 <pre class="example-command">alias list</pre>
+
+<span class="example-result-label">✅ <strong>Expected result:</strong></span>
+<pre class="example-result">Aliases:
+e → edit
+(If no aliases exist yet, the result shows "Aliases: (none)" instead.)</pre>
 </div>
 
 <div markdown="block" class="alert alert-success example-block">
-<span class="example-label">📌 <strong>Example: remove the shortcut <code>a</code></strong></span>
-<pre class="example-command">alias remove a</pre>
+<span class="example-label">📌 <strong>Example: remove the shortcut <code>e</code></strong></span>
+<pre class="example-command">alias remove e</pre>
+
+<span class="example-result-label">✅ <strong>Expected result:</strong></span>
+<pre class="example-result">Alias 'e' removed.</pre>
 </div>
 
 [↑ Back to Table of Contents](#table-of-contents)
@@ -725,7 +753,7 @@ A help window opens showing a link to this User Guide.
 </div>
 
 <div markdown="block" class="alert alert-info">
-💡 <strong>Tip:</strong> You can also press <strong>F1</strong> on your keyboard at any time to open the help window without typing a command. (Just press the F1 key, usually found in the top row of your keyboard.)
+💡 <strong>Tip:</strong> You can also press <strong>F1</strong> on your keyboard at any time to open the help window without typing a command.
 </div>
 
 [↑ Back to Table of Contents](#table-of-contents)
@@ -747,7 +775,7 @@ Delete every single contact from your address book at once.
 
 <div markdown="block" class="alert alert-success result-block">
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-The contact list becomes empty.
+Address book has been cleared! and the contact list becomes empty.
 </div>
 
 [↑ Back to Table of Contents](#table-of-contents)
@@ -762,6 +790,11 @@ Close PingBook. Your data is saved automatically before the app closes, so you d
 
 1. Type `exit`.
 2. Press **Enter**.
+
+<div markdown="block" class="alert alert-success result-block">
+<span class="example-result-label">✅ <strong>Expected result:</strong></span>
+The PingBook window closes. Your data is saved automatically before the app exits.
+</div>
 
 [↑ Back to Table of Contents](#table-of-contents)
 
@@ -822,8 +855,8 @@ Use this table as a quick reference once you are familiar with the app.
 
 | Command | Format | Example |
 |---|---|---|
-| **add** | `add n/NAME p/PHONE e/EMAIL [a/ADDRESS] [t/TAG]...` | `add n/Priya Sharma p/87654321 e/priya@company.com t/colleague` |
-| **edit** | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...` | `edit 2 n/Priya Nair e/priya.nair@company.com` |
+| **add** | `add n/NAME p/PHONE e/EMAIL [a/ADDRESS] [t/TAG]...` | `add n/Priya Sharma p/87654321 e/priya@u.nus.edu t/TA` |
+| **edit** | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]...` | `edit 2 n/Priya Nair e/priya.nair@u.nus.edu` |
 | **remark** | `remark INDEX r/REMARK` | `remark 2 r/Prefers email contact.` |
 | **delete** | `delete INDEX` | `delete 3` |
 | **list** | `list` | `list` |
@@ -835,8 +868,8 @@ Use this table as a quick reference once you are familiar with the app.
 | **archive** | `archive INDEX` | `archive 5` |
 | **unarchive** | `unarchive INDEX` | `unarchive 1` |
 | **listarchived** | `listarchived` | `listarchived` |
-| **alias add** | `alias add ALIAS COMMAND_WORD` | `alias add a add` |
-| **alias remove** | `alias remove ALIAS` | `alias remove a` |
+| **alias add** | `alias add ALIAS COMMAND_WORD` | `alias add e edit` |
+| **alias remove** | `alias remove ALIAS` | `alias remove e` |
 | **alias list** | `alias list` | `alias list` |
 | **clear** | `clear` | `clear` |
 | **help** | `help` | `help` |

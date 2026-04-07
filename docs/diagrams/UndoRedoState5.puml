@@ -17,6 +17,6 @@ State2 -[hidden]right-> State3
 
 class Pointer as "Current State" #FFFFFF
 
-Pointer -[#2E86C1,thickness=2]-up-> State3
+Pointer -up[#2E86C1,thickness=2]-> State3
 note right on link: State ab2 deleted (after "clear").
 @enduml

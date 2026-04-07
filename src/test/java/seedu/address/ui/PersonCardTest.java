@@ -97,6 +97,8 @@ public class PersonCardTest {
 
             assertNotNull(addressLabel);
             assertTrue(addressLabel.getText().isEmpty());
+            assertFalse(addressLabel.isVisible());
+            assertFalse(addressLabel.isManaged());
         });
     }
 

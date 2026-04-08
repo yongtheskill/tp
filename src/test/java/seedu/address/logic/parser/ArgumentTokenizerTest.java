@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 
 public class ArgumentTokenizerTest {
@@ -145,6 +148,35 @@ public class ArgumentTokenizerTest {
 
         assertNotEquals(aaa, "aaa");
         assertNotEquals(aaa, new Prefix("aab"));
+    }
+
+    @Test
+    public void isNonDecreasingPositions_emptyList_returnsTrue() {
+        // Vacuously true: no decreasing pair exists in an empty sequence.
+        assertTrue(ArgumentTokenizer.isNonDecreasingPositions(Collections.emptyList()));
+    }
+
+    @Test
+    public void isNonDecreasingPositions_singleElement_returnsTrue() {
+        // Single-element sequence is always non-decreasing.
+        assertTrue(ArgumentTokenizer.isNonDecreasingPositions(Collections.singletonList(7)));
+    }
+
+    @Test
+    public void isNonDecreasingPositions_sortedWithDuplicates_returnsTrue() {
+        // Equal adjacent values are allowed (non-decreasing, not strictly increasing).
+        assertTrue(ArgumentTokenizer.isNonDecreasingPositions(Arrays.asList(1, 2, 2, 5, 9)));
+    }
+
+    @Test
+    public void isNonDecreasingPositions_unsorted_returnsFalse() {
+        // Detect a decrease (3 -> 2), which should fail the invariant.
+        assertFalse(ArgumentTokenizer.isNonDecreasingPositions(Arrays.asList(1, 3, 2, 5)));
+    }
+
+    @Test
+    public void isNonDecreasingPositions_twoElementsDecreasing_returnsFalse() {
+        assertFalse(ArgumentTokenizer.isNonDecreasingPositions(Arrays.asList(2, 1)));
     }
 
 }

@@ -89,6 +89,13 @@ public class ArgumentTokenizer {
         // Sort by start position
         prefixPositions.sort((prefix1, prefix2) -> prefix1.getStartPosition() - prefix2.getStartPosition());
 
+        // Internal invariant: after sorting, prefix positions should be non-decreasing.
+        // Uses Java assertions (disabled by default unless enabled with -ea).
+        boolean isSorted = isNonDecreasingPositions(prefixPositions.stream()
+                .map(PrefixPosition::getStartPosition)
+                .collect(Collectors.toList()));
+        assert isSorted : "Prefix positions must be sorted by start position";
+
         // Insert a PrefixPosition to represent the preamble
         PrefixPosition preambleMarker = new PrefixPosition(new Prefix(""), 0);
         prefixPositions.add(0, preambleMarker);
@@ -107,6 +114,15 @@ public class ArgumentTokenizer {
         }
 
         return argMultimap;
+    }
+
+    static boolean isNonDecreasingPositions(List<Integer> positions) {
+        for (int i = 1; i < positions.size(); i++) {
+            if (positions.get(i - 1) > positions.get(i)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

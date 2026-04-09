@@ -312,6 +312,12 @@ Here are the rules for reading command formats throughout this guide:
 - Parameters can be typed in **any order**. `n/Alex p/91234567` and `p/91234567 n/Alex` produce the same result.
 - Commands that take no parameters at all (such as `list`, `help`, `exit`, `clear`, `sort`, and `listarchived`) will simply ignore any extra text you type after the command word.
 
+### Index-based command safety
+
+Commands that use `INDEX` always refer to the **currently displayed list**, not a fixed global ordering.
+After commands like `find`, `filter`, `sort`, or `listarchived`, the same contact may appear at a different index.
+To avoid editing/deleting the wrong contact, run `list` (or `listarchived`) and confirm the index immediately before running `edit`, `delete`, `star`, `unstar`, `archive`, or `unarchive`.
+
 <div markdown="block" class="alert alert-warning">
 ⚠️ <strong>Copying from a PDF?</strong> If you copy a command from a PDF version of this guide and paste it into the command box, check that no extra spaces or line breaks were inserted. If the command does not work, try typing it out manually instead.
 </div>

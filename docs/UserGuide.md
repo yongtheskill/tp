@@ -318,6 +318,12 @@ Commands that use `INDEX` always refer to the **currently displayed list**, not 
 After commands like `find`, `filter`, `sort`, or `listarchived`, the same contact may appear at a different index.
 To avoid editing/deleting the wrong contact, run `list` (or `listarchived`) and confirm the index immediately before running `edit`, `delete`, `star`, `unstar`, `archive`, or `unarchive`.
 
+### If a command fails
+
+- Read the result display first — it tells you exactly what went wrong.
+- Most failures come from missing prefixes, invalid index values, or wrong field formats.
+- Correct the command and run it again; your existing data is not changed by failed commands.
+
 <div markdown="block" class="alert alert-warning">
 ⚠️ <strong>Copying from a PDF?</strong> If you copy a command from a PDF version of this guide and paste it into the command box, check that no extra spaces or line breaks were inserted. If the command does not work, try typing it out manually instead.
 </div>

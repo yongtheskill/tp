@@ -2,6 +2,7 @@ package seedu.address.logic.parser;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,14 +76,17 @@ public class AliasRegistry {
      * Adds an alias mapping. Returns true if successful, false if conflict or invalid input.
      */
     public boolean addAlias(String alias, String commandWord, Set<String> reservedWords) {
-        if (alias == null || alias.isBlank() || commandWord == null || commandWord.isBlank()) {
+        String normalizedAlias = normalize(alias);
+        String normalizedCommandWord = normalize(commandWord);
+        if (normalizedAlias == null || normalizedAlias.isBlank()
+                || normalizedCommandWord == null || normalizedCommandWord.isBlank()) {
             return false;
         }
         Set<String> reserved = (reservedWords != null) ? reservedWords : Set.of();
-        if (reserved.contains(alias) || aliasMap.containsKey(alias)) {
+        if (reserved.contains(normalizedAlias) || aliasMap.containsKey(normalizedAlias)) {
             return false;
         }
-        aliasMap.put(alias, commandWord);
+        aliasMap.put(normalizedAlias, normalizedCommandWord);
         return true;
     }
 
@@ -97,14 +101,14 @@ public class AliasRegistry {
      * Removes an alias. Returns true if removed, false if not found.
      */
     public boolean removeAlias(String alias) {
-        return aliasMap.remove(alias) != null;
+        return aliasMap.remove(normalize(alias)) != null;
     }
 
     /**
      * Gets the command word for an alias, or null if not found.
      */
     public String getCommandWord(String alias) {
-        return aliasMap.get(alias);
+        return aliasMap.get(normalize(alias));
     }
 
     /**
@@ -131,7 +135,7 @@ public class AliasRegistry {
         aliases.forEach((alias, command) -> {
             String rejectionReason = getRejectionReason(alias, command, reserved);
             if (rejectionReason == null) {
-                aliasMap.put(alias, command);
+                aliasMap.put(normalize(alias), normalize(command));
             } else {
                 rejectedEntries.add(new RejectedAliasEntry(alias, command, rejectionReason));
             }
@@ -144,18 +148,30 @@ public class AliasRegistry {
         if (alias == null) {
             return "alias is null";
         }
-        if (alias.isBlank()) {
+        String normalizedAlias = normalize(alias);
+        if (normalizedAlias.isBlank()) {
             return "alias is blank";
         }
         if (commandWord == null) {
             return "command word is null";
         }
-        if (commandWord.isBlank()) {
+        String normalizedCommandWord = normalize(commandWord);
+        if (normalizedCommandWord.isBlank()) {
             return "command word is blank";
         }
-        if (reservedWords.contains(alias)) {
+        if (reservedWords.contains(normalizedAlias)) {
             return "alias is reserved";
         }
+        if (!reservedWords.isEmpty() && !reservedWords.contains(normalizedCommandWord)) {
+            return "command word is invalid";
+        }
+        if (aliasMap.containsKey(normalizedAlias)) {
+            return "alias duplicates another entry";
+        }
         return null;
+    }
+
+    private String normalize(String value) {
+        return value == null ? null : value.trim().toLowerCase(Locale.ROOT);
     }
 }

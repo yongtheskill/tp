@@ -88,6 +88,16 @@ public interface Model {
     void updateFilteredPersonList(Predicate<Person> predicate);
 
     /**
+     * Returns the current view predicate (active or archived).
+     */
+    Predicate<Person> getViewPredicate();
+
+    /**
+     * Sets the current view predicate (active or archived).
+     */
+    void setViewPredicate(Predicate<Person> predicate);
+
+    /**
      * Sorts all persons in the address book with starred contacts first, then alphabetically by name.
      */
     void sortPersons();

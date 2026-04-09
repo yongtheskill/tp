@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,6 +46,15 @@ public class AliasRegistryTest {
     @Test
     public void addAlias_blankCommand_returnsFalse() {
         assertFalse(registry.addAlias("ls", "  ", Set.of("list")));
+    }
+
+    @Test
+    public void addAlias_mixedCaseAliasAndCommand_normalizesStoredEntry() {
+        assertTrue(registry.addAlias("Ls", "LiSt", Set.of("list")));
+
+        assertEquals("list", registry.getCommandWord("ls"));
+        assertEquals("list", registry.getCommandWord("LS"));
+        assertTrue(registry.getAllAliases().containsKey("ls"));
     }
 
     @Test
@@ -143,6 +153,35 @@ public class AliasRegistryTest {
         assertEquals("list", registry.getCommandWord("ls"));
         assertEquals(1, result.getLoadedCount());
         assertEquals(0, result.getRejectedCount());
+    }
+
+    @Test
+    public void loadAliases_invalidTargetAndDuplicateAfterNormalization_rejected() {
+        Map<String, String> aliases = new LinkedHashMap<>();
+        aliases.put("Ls", "List");
+        aliases.put("ls", "find");
+        aliases.put("bad", "missing");
+
+        AliasRegistry.LoadAliasesResult result = registry.loadAliases(aliases, Set.of("list", "find"));
+
+        assertEquals("list", registry.getCommandWord("ls"));
+        assertEquals(1, result.getLoadedCount());
+        assertEquals(2, result.getRejectedCount());
+    }
+
+    @Test
+    public void loadAliases_rejectedEntries_exposesDetails() {
+        Map<String, String> aliases = new LinkedHashMap<>();
+        aliases.put("bad", "missing");
+
+        AliasRegistry.LoadAliasesResult result = registry.loadAliases(aliases, Set.of("list"));
+
+        assertTrue(result.hasRejectedEntries());
+        AliasRegistry.RejectedAliasEntry rejectedEntry = result.getRejectedEntries().get(0);
+        assertEquals("bad", rejectedEntry.getAlias());
+        assertEquals("missing", rejectedEntry.getCommandWord());
+        assertEquals("command word is invalid", rejectedEntry.getReason());
+        assertEquals("alias='bad', command='missing' (command word is invalid)", rejectedEntry.toLogString());
     }
 
     @Test

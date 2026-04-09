@@ -52,10 +52,12 @@ public class ListCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
         if (showArchived) {
+            model.setViewPredicate(person -> person.isArchived());
             model.updateFilteredPersonList(person -> person.isArchived());
             return new CommandResult(MESSAGE_ARCHIVED_SUCCESS);
         }
 
+        model.setViewPredicate(PREDICATE_SHOW_ACTIVE_PERSONS);
         model.updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
         return new CommandResult(MESSAGE_SUCCESS);
     }

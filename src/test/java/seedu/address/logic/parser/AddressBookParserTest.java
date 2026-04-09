@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
@@ -44,7 +45,15 @@ import seedu.address.testutil.PersonUtil;
  */
 public class AddressBookParserTest {
 
-    private final AddressBookParser parser = new AddressBookParser();
+    private AliasRegistry aliasRegistry;
+    private AddressBookParser parser;
+
+    @BeforeEach
+    public void setUp() {
+        AliasCommand.getAliasRegistry().clear();
+        aliasRegistry = new AliasRegistry();
+        parser = new AddressBookParser(aliasRegistry);
+    }
 
     /**
      * Verifies parsing of {@code add} commands.
@@ -61,8 +70,17 @@ public class AddressBookParserTest {
      */
     @Test
     public void parseCommand_clear() throws Exception {
-        assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD) instanceof ClearCommand);
-        assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD + " 3") instanceof ClearCommand);
+        assertEquals(new ClearCommand(), parser.parseCommand(ClearCommand.COMMAND_WORD));
+        assertEquals(new ClearCommand(true), parser.parseCommand(ClearCommand.COMMAND_WORD + " confirm"));
+        assertEquals(new ClearCommand(true), parser.parseCommand(ClearCommand.COMMAND_WORD + " CONFIRM"));
+    }
+
+    @Test
+    public void parseCommand_clearInvalidArguments_throwsParseException() {
+        String invalidClearCommand = ClearCommand.COMMAND_WORD + " 3";
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClearCommand.MESSAGE_USAGE);
+
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(invalidClearCommand));
     }
 
     /**
@@ -91,6 +109,12 @@ public class AddressBookParserTest {
         AliasCommand removeCommand = (AliasCommand) parser.parseCommand(
                 AliasCommand.COMMAND_WORD + " remove ls");
         assertEquals(new AliasCommand("remove", "ls", null), removeCommand);
+    }
+
+    @Test
+    public void parseCommand_alias_caseInsensitiveSuccess() throws Exception {
+        AliasCommand addCommand = (AliasCommand) parser.parseCommand("ALIAS ADD LS LIST");
+        assertEquals(new AliasCommand("add", "ls", "list"), addCommand);
     }
 
     /**
@@ -163,6 +187,27 @@ public class AddressBookParserTest {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
         assertTrue(((ListCommand) parser.parseCommand(ListCommand.ARCHIVED_COMMAND_WORD)).isShowArchived());
+    }
+
+    @Test
+    public void parseCommand_mixedCaseBuiltInCommand_success() throws Exception {
+        assertTrue(parser.parseCommand("LiSt") instanceof ListCommand);
+        assertTrue(parser.parseCommand("LiStArChIvEd") instanceof ListCommand);
+    }
+
+    @Test
+    public void parseCommand_mixedCaseAlias_success() throws Exception {
+        aliasRegistry.addAlias("ls", "list", AliasCommand.RESERVED_COMMAND_WORDS);
+
+        assertTrue(parser.parseCommand("LS") instanceof ListCommand);
+    }
+
+    @Test
+    public void parseCommand_defaultConstructorUsesSharedAliasRegistry_success() throws Exception {
+        AliasCommand.getAliasRegistry().addAlias("ls", "list", AliasCommand.RESERVED_COMMAND_WORDS);
+        AddressBookParser defaultParser = new AddressBookParser();
+
+        assertTrue(defaultParser.parseCommand("LS") instanceof ListCommand);
     }
 
     /**

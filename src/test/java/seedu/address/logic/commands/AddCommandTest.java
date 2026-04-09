@@ -162,6 +162,16 @@ public class AddCommandTest {
         public void sortPersons() {
             throw new AssertionError("This method should not be called.");
         }
+
+        @Override
+        public Predicate<Person> getViewPredicate() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setViewPredicate(Predicate<Person> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
     }
 
     /**

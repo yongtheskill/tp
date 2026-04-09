@@ -3,6 +3,8 @@ package seedu.address.logic.parser;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 
+import java.util.Locale;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +40,16 @@ public class AddressBookParser {
     private static final Pattern BASIC_COMMAND_FORMAT = Pattern.compile("(?<commandWord>\\S+)(?<arguments>.*)");
     private static final Logger logger = LogsCenter.getLogger(AddressBookParser.class);
 
+    private final AliasRegistry aliasRegistry;
+
+    public AddressBookParser() {
+        this(AliasCommand.getAliasRegistry());
+    }
+
+    public AddressBookParser(AliasRegistry aliasRegistry) {
+        this.aliasRegistry = Objects.requireNonNull(aliasRegistry);
+    }
+
     /**
      * Parses user input into command for execution.
      *
@@ -52,14 +64,19 @@ public class AddressBookParser {
         }
 
         final String commandWord = matcher.group("commandWord");
+        final String normalizedCommandWord = commandWord.toLowerCase(Locale.ROOT);
+        final String resolvedCommandWord = aliasRegistry.getCommandWord(normalizedCommandWord) == null
+            ? normalizedCommandWord
+            : aliasRegistry.getCommandWord(normalizedCommandWord);
         final String arguments = matcher.group("arguments");
 
         // Note to developers: Change the log level in config.json to enable lower level (i.e., FINE, FINER and lower)
         // log messages such as the one below.
         // Lower level log messages are used sparingly to minimize noise in the code.
-        logger.fine("Command word: " + commandWord + "; Arguments: " + arguments);
+        logger.fine("Command word: " + commandWord + "; Resolved command word: " + resolvedCommandWord
+            + "; Arguments: " + arguments);
 
-        switch (commandWord) {
+        switch (resolvedCommandWord) {
 
         case AddCommand.COMMAND_WORD:
             return new AddCommandParser().parse(arguments);
@@ -77,7 +94,14 @@ public class AddressBookParser {
             return new DeleteCommandParser().parse(arguments);
 
         case ClearCommand.COMMAND_WORD:
-            return new ClearCommand();
+            String clearArgs = arguments.trim();
+            if (clearArgs.isEmpty()) {
+                return new ClearCommand();
+            }
+            if ("confirm".equalsIgnoreCase(clearArgs)) {
+                return new ClearCommand(true);
+            }
+            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClearCommand.MESSAGE_USAGE));
 
         case FindCommand.COMMAND_WORD:
             return new FindCommandParser().parse(arguments);

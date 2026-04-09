@@ -2,7 +2,6 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
-import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PERSONS;
 
 import java.util.List;
 
@@ -58,7 +57,6 @@ public class RemarkCommand extends Command {
         Person editedPerson = personToEdit.withRemark(remark);
 
         model.setPerson(personToEdit, editedPerson);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ACTIVE_PERSONS);
 
         return new CommandResult(generateSuccessMessage(editedPerson));
     }

@@ -52,7 +52,7 @@ public class LogicManager implements Logic {
         this.model = model;
         this.storage = storage;
         this.aliasRegistry = aliasRegistry;
-        addressBookParser = new AddressBookParser();
+        addressBookParser = new AddressBookParser(aliasRegistry);
     }
 
     @Override

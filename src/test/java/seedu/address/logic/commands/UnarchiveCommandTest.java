@@ -41,6 +41,7 @@ public class UnarchiveCommandTest {
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.setPerson(archivedPerson, unarchivedPerson);
+        expectedModel.updateFilteredPersonList(Person::isArchived);
 
         assertCommandSuccess(unarchiveCommand, model, expectedMessage, expectedModel);
     }

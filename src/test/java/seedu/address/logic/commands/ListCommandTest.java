@@ -1,5 +1,8 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
@@ -47,8 +50,29 @@ public class ListCommandTest {
         model.setPerson(personToArchive, archivedPerson);
 
         expectedModel.setPerson(personToArchive, archivedPerson);
+        expectedModel.setViewPredicate(seedu.address.model.Model.PREDICATE_SHOW_ARCHIVED_PERSONS);
         expectedModel.updateFilteredPersonList(seedu.address.model.person.Person::isArchived);
 
         assertCommandSuccess(new ListCommand(true), model, ListCommand.MESSAGE_ARCHIVED_SUCCESS, expectedModel);
+    }
+
+    @Test
+    public void constructorsAndAccessor_trackArchivedMode() {
+        assertFalse(new ListCommand().isShowArchived());
+        assertTrue(new ListCommand(true).isShowArchived());
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+        ListCommand activeCommand = new ListCommand();
+        ListCommand activeCommandCopy = new ListCommand(false);
+        ListCommand archivedCommand = new ListCommand(true);
+
+        assertTrue(activeCommand.equals(activeCommand));
+        assertTrue(activeCommand.equals(activeCommandCopy));
+        assertFalse(activeCommand.equals(archivedCommand));
+        assertFalse(activeCommand.equals(1));
+        assertFalse(activeCommand.equals(null));
+        assertEquals(activeCommand.hashCode(), activeCommandCopy.hashCode());
     }
 }

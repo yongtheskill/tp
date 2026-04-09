@@ -1,40 +1,39 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.model.Model.PREDICATE_SHOW_ACTIVE_PERSONS;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.model.Model;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.FieldsContainKeywordsPredicate;
 
 /**
- * Finds and lists all persons in address book whose name contains any of the
+ * Finds and lists all persons in address book whose fields contain any of the
  * argument keywords.
- * Keyword matching is case insensitive.
+ * Keyword matching is case insensitive and uses substring matching.
  */
 public class FindCommand extends Command {
 
     public static final String COMMAND_WORD = "find";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all the persons whose names contain any of "
-            + "the specified keywords (case-insensitive) and displays them as a list with index numbers.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all persons whose fields contain any of "
+            + "the specified keywords (case-insensitive substring match) and displays them as a list.\n"
             + "Parameters: KEYWORD [MORE_KEYWORDS]...\n"
             + "Example: " + COMMAND_WORD + " alice bob charlie";
 
-    private final NameContainsKeywordsPredicate predicate;
+    private final FieldsContainKeywordsPredicate predicate;
 
     /**
-     * Creates a find command with the provided name-matching predicate.
+     * Creates a find command with the provided matching predicate.
      *
      * @param predicate predicate used to filter matching persons
      */
-    public FindCommand(NameContainsKeywordsPredicate predicate) {
+    public FindCommand(FieldsContainKeywordsPredicate predicate) {
         this.predicate = predicate;
     }
 
     /**
-     * Applies the predicate to show matching active persons.
+     * Applies the predicate to show matching persons in the current view (active or archived).
      *
      * @param model model used to update the filtered person list
      * @return result containing the number of matching persons
@@ -42,7 +41,7 @@ public class FindCommand extends Command {
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
-        model.updateFilteredPersonList(predicate.and(PREDICATE_SHOW_ACTIVE_PERSONS));
+        model.updateFilteredPersonList(predicate.and(model.getViewPredicate()));
         return new CommandResult(
                 String.format(Messages.MESSAGE_PERSONS_LISTED_OVERVIEW, model.getFilteredPersonList().size()));
     }

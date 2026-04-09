@@ -10,13 +10,19 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Name {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Names should only contain alphanumeric characters, spaces, and hyphens, and it should not be blank";
+            "Names should only contain letters, digits, spaces, hyphens, apostrophes, and periods,"
+                    + " must start with a letter or digit, and punctuation cannot appear consecutively or at the"
+                    + " end of the name";
 
     /*
-     * The first character of the address must not be a whitespace,
-     * otherwise " " (a blank string) becomes a valid input.
+     * Names must start with a letter or digit (\p{L} or \p{N}).
+     * The regex then permits internal hyphens, apostrophes, and dots, while preventing
+     * consecutive punctuation and punctuation at the end of the name.
+     * Trailing spaces are permitted here because ParserUtil.parseName trims inputs before validation.
      */
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} \\-]*";
+    public static final String VALIDATION_REGEX = "[\\p{L}\\p{N}]+(?:[\\-'][\\p{L}\\p{N}]+|\\.[\\p{L}\\p{N}]+"
+            + "|\\.(?=\\s))*(?: [\\p{L}\\p{N}]+(?:[\\-'][\\p{L}\\p{N}]+|\\.[\\p{L}\\p{N}]+"
+            + "|\\.(?=\\s))*)* *";
 
     public final String fullName;
 

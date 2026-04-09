@@ -1,5 +1,7 @@
 package seedu.address.logic.parser;
 
+import java.util.Locale;
+
 import seedu.address.logic.commands.AliasCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
@@ -14,7 +16,7 @@ public class AliasCommandParser implements Parser<AliasCommand> {
             throw new ParseException(AliasCommand.MESSAGE_USAGE);
         }
         String[] tokens = trimmedArgs.split("\\s+");
-        String action = tokens[0];
+        String action = tokens[0].toLowerCase(Locale.ROOT);
         if (action.equals("add")) {
             if (tokens.length != 3) {
                 throw new ParseException(AliasCommand.MESSAGE_USAGE);

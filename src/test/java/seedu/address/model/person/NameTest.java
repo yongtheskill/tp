@@ -29,6 +29,10 @@ public class NameTest {
         assertFalse(Name.isValidName(" ")); // spaces only
         assertFalse(Name.isValidName("^")); // only non-alphanumeric characters
         assertFalse(Name.isValidName("peter*")); // contains non-alphanumeric characters
+        assertFalse(Name.isValidName("John.")); // trailing period not allowed
+        assertFalse(Name.isValidName("Smith-")); // trailing hyphen not allowed
+        assertFalse(Name.isValidName("O''Brien")); // consecutive punctuation not allowed
+        assertFalse(Name.isValidName("John.-.Smith")); // mixed consecutive punctuation not allowed
 
         // valid name
         assertTrue(Name.isValidName("peter jack")); // alphabets only
@@ -38,6 +42,8 @@ public class NameTest {
         assertTrue(Name.isValidName("David Roger Jackson Ray Jr 2nd")); // long names
         assertTrue(Name.isValidName("Anne-Marie")); // hyphenated name
         assertTrue(Name.isValidName("Mary-Jane Watson")); // hyphen with spaces
+        assertTrue(Name.isValidName("O'Brien")); // apostrophe within a name
+        assertTrue(Name.isValidName("Dr. Smith")); // period before a following token
     }
 
     @Test

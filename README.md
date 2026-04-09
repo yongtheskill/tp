@@ -10,7 +10,7 @@
 
 **Key features:**
 - **Creating/Editing contacts** — `add`, `edit`, `remark`, `delete`
-- **Finding contacts** — `list`, `find` (by name), `filter` (by tag), `sort` (starred first, then alphabetical)
+- **Finding contacts** — `list`, `find` (across names, phone numbers, emails, addresses, remarks, and tags), `filter` (by tag), `sort` (starred first, then alphabetical)
 - **Organising contacts** — `star`/`unstar` to pin important contacts, `archive`/`unarchive`/`listarchived` to hide contacts you rarely need
 - **Command aliases** — create personal shortcuts (e.g. `a` for `add`) to speed up your workflow
 

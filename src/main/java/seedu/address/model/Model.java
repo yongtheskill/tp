@@ -15,6 +15,8 @@ public interface Model {
     Predicate<Person> PREDICATE_SHOW_ALL_PERSONS = unused -> true;
     /** {@code Predicate} that shows only active (non-archived) persons. */
     Predicate<Person> PREDICATE_SHOW_ACTIVE_PERSONS = person -> !person.isArchived();
+    /** {@code Predicate} that shows only archived persons. */
+    Predicate<Person> PREDICATE_SHOW_ARCHIVED_PERSONS = Person::isArchived;
 
     /**
      * Replaces user prefs data with the data in {@code userPrefs}.
@@ -86,6 +88,19 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    /**
+     * Returns the current view predicate (active or archived).
+     */
+    Predicate<Person> getViewPredicate();
+
+    /**
+        * Sets the current view predicate (active or archived).
+        * This contract is enforced by {@link ModelManager#setViewPredicate(Predicate)}.
+        *
+        * @throws NullPointerException if {@code predicate} is null.
+     */
+    void setViewPredicate(Predicate<Person> predicate);
 
     /**
      * Sorts all persons in the address book with starred contacts first, then alphabetically by name.

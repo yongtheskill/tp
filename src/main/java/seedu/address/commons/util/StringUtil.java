@@ -6,6 +6,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * Helper functions for handling strings.
@@ -64,5 +65,12 @@ public class StringUtil {
         } catch (NumberFormatException nfe) {
             return false;
         }
+    }
+
+    /**
+     * Returns a normalized string value for case-insensitive command handling.
+     */
+    public static String normalize(String value) {
+        return value == null ? null : value.trim().toLowerCase(Locale.ROOT);
     }
 }

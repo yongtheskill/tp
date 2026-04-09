@@ -25,6 +25,7 @@ public class StarCommand extends Command {
 
     public static final String MESSAGE_STAR_PERSON_SUCCESS = "Starred Person: %1$s";
     public static final String MESSAGE_PERSON_ALREADY_STARRED = "Person is already starred: %1$s";
+    public static final String MESSAGE_PERSON_ARCHIVED = "Cannot star an archived person. Unarchive the person first.";
 
     private final Index targetIndex;
 
@@ -42,6 +43,9 @@ public class StarCommand extends Command {
         }
 
         Person personToStar = lastShownList.get(targetIndex.getZeroBased());
+        if (personToStar.isArchived()) {
+            throw new CommandException(MESSAGE_PERSON_ARCHIVED);
+        }
         if (personToStar.isStarred()) {
             return new CommandResult(String.format(MESSAGE_PERSON_ALREADY_STARRED, Messages.format(personToStar)));
         }

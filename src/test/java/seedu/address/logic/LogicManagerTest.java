@@ -8,6 +8,7 @@ import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
 import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.AMY;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.AliasCommand;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -33,6 +35,7 @@ import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonAliasStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.StorageManager;
+import seedu.address.testutil.AddressBookBuilder;
 import seedu.address.testutil.PersonBuilder;
 
 public class LogicManagerTest {
@@ -47,6 +50,7 @@ public class LogicManagerTest {
 
     @BeforeEach
     public void setUp() {
+        AliasCommand.getAliasRegistry().clear();
         JsonAddressBookStorage addressBookStorage =
                 new JsonAddressBookStorage(temporaryFolder.resolve("addressBook.json"));
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json"));
@@ -71,6 +75,46 @@ public class LogicManagerTest {
     public void execute_validCommand_success() throws Exception {
         String listCommand = ListCommand.COMMAND_WORD;
         assertCommandSuccess(listCommand, ListCommand.MESSAGE_SUCCESS, model);
+    }
+
+    @Test
+    public void execute_mixedCaseBuiltInCommand_success() throws Exception {
+        assertCommandSuccess("LiSt", ListCommand.MESSAGE_SUCCESS, model);
+    }
+
+    @Test
+    public void execute_aliasThenUseAlias_success() throws Exception {
+        CommandResult addAliasResult = logic.execute("ALIAS ADD LS LIST");
+        assertEquals("Alias 'ls' added for command 'list'.", addAliasResult.getFeedbackToUser());
+
+        CommandResult result = logic.execute("lS");
+        assertEquals(ListCommand.MESSAGE_SUCCESS, result.getFeedbackToUser());
+    }
+
+    @Test
+    public void execute_addWhileViewingArchived_switchesToActiveView() throws Exception {
+        AddressBookBuilder addressBookBuilder = new AddressBookBuilder().withPerson(ALICE.withArchived(true));
+        model = new ModelManager(addressBookBuilder.build(), new UserPrefs());
+
+        JsonAddressBookStorage addressBookStorage =
+                new JsonAddressBookStorage(temporaryFolder.resolve("archivedViewAddressBook.json"));
+        JsonUserPrefsStorage userPrefsStorage =
+                new JsonUserPrefsStorage(temporaryFolder.resolve("archivedViewUserPrefs.json"));
+        JsonAliasStorage aliasStorage = new JsonAliasStorage(temporaryFolder.resolve("archivedViewAliases.json"));
+        logic = new LogicManager(model, new StorageManager(addressBookStorage, userPrefsStorage, aliasStorage));
+
+        logic.execute(ListCommand.ARCHIVED_COMMAND_WORD);
+
+        Person expectedAddedPerson = new PersonBuilder(AMY).withTags().build();
+        String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY
+                + EMAIL_DESC_AMY + ADDRESS_DESC_AMY;
+        CommandResult result = logic.execute(addCommand);
+
+        assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(expectedAddedPerson), 2),
+                result.getFeedbackToUser());
+        // After adding, view should switch to active contacts so the new contact is visible
+        assertEquals(1, logic.getFilteredPersonList().size());
+        assertEquals(expectedAddedPerson, logic.getFilteredPersonList().get(0));
     }
 
     @Test

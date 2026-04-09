@@ -25,6 +25,8 @@ public class UnstarCommand extends Command {
 
     public static final String MESSAGE_UNSTAR_PERSON_SUCCESS = "Unstarred Person: %1$s";
     public static final String MESSAGE_PERSON_ALREADY_UNSTARRED = "Person is already unstarred: %1$s";
+    public static final String MESSAGE_PERSON_ARCHIVED =
+            "Cannot unstar an archived person. Unarchive the person first.";
 
     private final Index targetIndex;
 
@@ -42,6 +44,9 @@ public class UnstarCommand extends Command {
         }
 
         Person personToUnstar = lastShownList.get(targetIndex.getZeroBased());
+        if (personToUnstar.isArchived()) {
+            throw new CommandException(MESSAGE_PERSON_ARCHIVED);
+        }
         if (!personToUnstar.isStarred()) {
             return new CommandResult(String.format(MESSAGE_PERSON_ALREADY_UNSTARRED,
                     Messages.format(personToUnstar)));

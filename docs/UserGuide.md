@@ -47,7 +47,7 @@ The only hard requirement: you can open files and folders on your computer and t
    - [Deleting a contact: `delete`](#deleting-a-contact-delete)
 6. [Finding Contacts](#finding-contacts)
    - [Listing all contacts: `list`](#listing-all-contacts-list)
-   - [Searching by name: `find`](#searching-by-name-find)
+   - [Searching contacts: `find`](#searching-contacts-find)
    - [Filtering by tag: `filter`](#filtering-by-tag-filter)
    - [Sorting contacts: `sort`](#sorting-contacts-sort)
 7. [Organising Contacts](#organising-contacts)
@@ -392,7 +392,8 @@ Here are the rules for reading command formats throughout this guide:
 - Parameters inside `[square brackets]` are **optional**; you can include them or leave them out. For example, `[a/ADDRESS]` means you may omit the address.
 - Parameters followed by `...` can be **repeated** as many times as you like. For example, `[t/TAG]...` means you can add zero or more tags: `t/groupmate t/cs2103`.
 - Parameters can be typed in **any order**. `n/Alex p/91234567` and `p/91234567 n/Alex` produce the same result.
-- Commands that take no parameters at all (such as `list`, `help`, `exit`, `clear`, `sort`, and `listarchived`) will simply ignore any extra text you type after the command word.
+- Commands that take no parameters at all (such as `list`, `help`, `exit`, `sort`, and `listarchived`) require only the command word. If you add extra text, PingBook shows an error instead of guessing what you meant.
+- The only exception is `clear`, which optionally accepts the confirmation word `confirm`.
 
 ### Index-based command safety
 
@@ -426,11 +427,11 @@ Each prefix (`n/`, `p/`, `e/`, etc.) tells PingBook what type of information fol
 
 | Field | Required? | Rules |
 |---|---|---|
-| `n/NAME` | Yes | Letters, digits, spaces, and hyphens allowed (e.g. `Anne-Marie`). Must not be blank. |
-| `p/PHONE` | Yes | Digits only, at least 3 digits long. |
+| `n/NAME` | Yes | Letters (including accented characters), digits, spaces, hyphens, apostrophes, and periods allowed (e.g. `Anne-Marie`, `O'Brien`, `Dr. Lee`). Must start with a letter or digit, and punctuation cannot appear consecutively or at the end of the name. |
+| `p/PHONE` | Yes | Digits only, 3 to 15 digits long. |
 | `e/EMAIL` | Yes | Must follow the format `localpart@domain` (e.g. `alex@email.com`). |
 | `a/ADDRESS` | No | Any text. Can be added later using `edit`. |
-| `t/TAG` | No | Letters and digits only, no spaces. Use separate `t/` prefixes for multiple tags. |
+| `t/TAG` | No | Letters and digits are required in each segment; single hyphens may appear between segments, with no spaces or leading, trailing, or consecutive hyphens. Use separate `t/` prefixes for multiple tags. |
 
 ##### Steps
 
@@ -444,7 +445,7 @@ Each prefix (`n/`, `p/`, `e/`, etc.) tells PingBook what type of information fol
 This adds your CS2103T TA Priya Sharma with her phone number, email, office room number, and the tag "ta."
 
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">New contact added: Priya Sharma; Phone: 87654321; Email: priya@u.nus.edu; Address: COM1-02-12; Tags: [ta]</pre>
+<pre class="example-result">New contact added: Priya Sharma; Phone: 87654321; Email: priya@u.nus.edu; Address: COM1-02-12; Tags: [ta] (7 contacts total)</pre>
 </div>
 
 <div markdown="block" class="alert alert-info">
@@ -462,6 +463,7 @@ Changes one or more details of an existing contact.
 - `INDEX` is the number shown next to the contact in the current list (e.g. if Priya is contact number 3, use `edit 3 ...`).
 - You must change at least one field; you cannot run `edit 3` with nothing after it.
 - Any field you leave out stays unchanged, **except tags**: if you include any `t/` value, it **replaces all** existing tags. To remove all tags entirely, use `t/` with nothing after it.
+- To clear the address field, use `a/` with nothing after it.
 
 ##### Steps
 
@@ -568,25 +570,26 @@ Shows all your active (non-archived) contacts.
 <span class="example-label">📌 <strong>Example: list all active contacts</strong></span>
 <pre class="example-command">list</pre>
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">Listed all active contacts.</pre>
+<pre class="example-result">Listed active contacts</pre>
 </div>
 
 [↑ Back to Table of Contents](#table-of-contents)
 
-### Searching by name: `find`
+### Searching contacts: `find`
 
-Shows only the contacts whose names contain the words you search for.
+Shows only the contacts that match any of the keywords you search for.
 
-##### Format: `find KEYWORD [MORE_KEYWORDS]`
+#### Format: `find KEYWORD [MORE_KEYWORDS]`
 
 - The search is **case-insensitive**, meaning it does not matter whether you use uppercase or lowercase letters. `alex` matches `Alex`.
-- Only **complete words** are matched. Searching `Al` will not find `Alex`; you need to type the full word `Alex`.
+- **Partial matching** is supported. Searching `Al` will find `Alex`, `Alice`, etc.
 - If you type multiple keywords, contacts matching **any one** of them are shown. For example, `find wei priya` shows everyone named Wei and everyone named Priya.
-- Only the contact's **name** is searched. All other fields (phone number, email, address, tags, and remarks) are ignored.
+- The search looks across **all fields**: name, phone number, email, address, remark, and tags. For example, `find 9123` finds contacts whose phone number contains `9123`, and `find ta` finds contacts tagged `ta`.
+- The search respects your current view. If you are viewing archived contacts (via `listarchived`), `find` searches only within archived contacts. If you are in the active view (via `list`), it searches only active contacts.
 
 ##### Steps
 
-1. Type `find` followed by one or more name keywords.
+1. Type `find` followed by one or more keywords.
 2. Press **Enter**.
 
 <div markdown="block" class="alert alert-success example-block">
@@ -598,7 +601,7 @@ The matching contacts appear in the list below.
 </div>
 
 <div markdown="block" class="alert alert-info">
-💡 <strong>Tip:</strong> To search by tag instead of name, use <a href="#filtering-by-tag-filter"><code>filter</code></a>.
+💡 <strong>Tip:</strong> You can search by any field — name, phone, email, address, remark, or tags. To filter exclusively by tag, use <a href="#filtering-by-tag-filter"><code>filter</code></a>.
 </div>
 
 [↑ Back to Table of Contents](#table-of-contents)
@@ -611,7 +614,7 @@ Shows only the contacts that have a specific tag attached to them.
 
 - Tag matching is **case-insensitive**. `Friend` matches `friend`.
 - If you provide multiple tags, contacts that have **any one** of those tags are shown.
-- Archived contacts are never included in filter results.
+- The filter respects your current view. If you are viewing archived contacts (via `listarchived`), `filter` searches only within archived contacts. Otherwise, it searches only active contacts.
 
 ##### Steps
 
@@ -627,7 +630,7 @@ The number shown reflects how many contacts match the tags you searched for.
 </div>
 
 <div markdown="block" class="alert alert-info">
-💡 <strong>See also:</strong> To search by name instead of tag, use <a href="#searching-by-name-find"><code>find</code></a>.
+💡 <strong>See also:</strong> To search across names, phone numbers, emails, addresses, or tags, use <a href="#searching-contacts-find"><code>find</code></a>.
 </div>
 
 [↑ Back to Table of Contents](#table-of-contents)
@@ -647,7 +650,8 @@ Reorders your contact list so that starred contacts appear first, and all remain
 <span class="example-label">📌 <strong>Example: sort the contact list</strong></span>
 <pre class="example-command">sort</pre>
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">Sorted all persons (starred first, then by name) and the contact list reorders accordingly.</pre>
+<pre class="example-result">Sorted all persons (starred first, then by name)</pre>
+The contact list reorders accordingly.
 </div>
 
 [↑ Back to Table of Contents](#table-of-contents)
@@ -659,6 +663,8 @@ Reorders your contact list so that starred contacts appear first, and all remain
 Marks a contact as important so they always float to the top of the list.
 
 ##### Format: `star INDEX`
+
+- You can only star **active** (non-archived) contacts. To star an archived contact, first [unarchive](#restoring-an-archived-contact-unarchive) it.
 
 ##### Steps
 
@@ -688,6 +694,8 @@ Removes the starred status from a contact.
 
 ##### Format: `unstar INDEX`
 
+- You can only unstar **active** (non-archived) contacts. To unstar an archived contact, first [unarchive](#restoring-an-archived-contact-unarchive) it.
+
 ##### Steps
 
 1. Type `list` and press **Enter** to find the contact's index number.
@@ -713,8 +721,8 @@ Hides a contact from the main list without deleting them. Useful for people you 
 
 ##### Format: `archive INDEX`
 
-- Archived contacts are hidden from `list`, `find`, and `filter` results.
-- To see archived contacts, use [`listarchived`](#listing-archived-contacts-listarchived).
+- Archived contacts are hidden from `list` results.
+- To see archived contacts, use [`listarchived`](#listing-archived-contacts-listarchived). You can then use `find` and `filter` to search within archived contacts.
 
 ##### Steps
 
@@ -726,7 +734,8 @@ Hides a contact from the main list without deleting them. Useful for people you 
 <span class="example-label">📌 <strong>Example: archive contact number 5</strong></span>
 <pre class="example-command">archive 5</pre>
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">Archived Person: ... and the contact no longer appears in the active list.</pre>
+<pre class="example-result">Archived Person: ...</pre>
+The contact no longer appears in the active list.
 </div>
 
 <div markdown="block" class="alert alert-info">
@@ -751,7 +760,8 @@ Moves an archived contact back to your active list.
 <span class="example-label">📌 <strong>Example: restore the first archived contact</strong></span>
 <pre class="example-command">unarchive 1</pre>
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">The contact disappears from the archived list and reappears when you run list.</pre>
+<pre class="example-result">Unarchived Person: ...</pre>
+The contact disappears from the archived list and reappears when you run <code>list</code>.
 </div>
 
 <div markdown="block" class="alert alert-info">
@@ -775,7 +785,8 @@ Shows all contacts that have been archived.
 <span class="example-label">📌 <strong>Example: view all archived contacts</strong></span>
 <pre class="example-command">listarchived</pre>
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">Listed archived contacts and all archived contacts appear in the list.</pre>
+<pre class="example-result">Listed archived contacts</pre>
+All archived contacts appear in the list.
 </div>
 
 ![The archived contacts list view](images/ListArchived.png)
@@ -814,21 +825,22 @@ Creates a personal shortcut word that triggers a built-in command. For example, 
 <pre class="example-command">alias add la listarchived</pre>
 After this, you can type <code>la</code> instead of <code>listarchived</code> to view your archived contacts.
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">New alias added: la → listarchived</pre>
+<pre class="example-result">Alias 'la' added for command 'listarchived'.</pre>
 </div>
 
 <div markdown="block" class="alert alert-success example-block">
 <span class="example-label">📌 <strong>Example: see all your current shortcuts</strong></span>
 <pre class="example-command">alias list</pre>
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">Listed aliases: la → listarchived</pre>
+<pre class="example-result">Aliases:
+la -> listarchived</pre>
 </div>
 
 <div markdown="block" class="alert alert-success example-block">
 <span class="example-label">📌 <strong>Example: remove the shortcut <code>la</code></strong></span>
 <pre class="example-command">alias remove la</pre>
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
-<pre class="example-result">Removed alias: la</pre>
+<pre class="example-result">Alias 'la' removed.</pre>
 </div>
 
 [↑ Back to Table of Contents](#table-of-contents)
@@ -874,19 +886,22 @@ A help window opens showing a link to this User Guide.
 
 ### Clearing all contacts: `clear`
 
-Deletes every contact from your address book at once.
+Deletes every contact from your address book at once. Requires confirmation to prevent accidental data loss.
 
-##### Format: `clear`
+#### Format: `clear confirm`
 
 ##### Steps
 
-1. Type `clear`.
+1. Type `clear confirm`.
 2. Press **Enter**.
+
+If you type just `clear` without `confirm`, PingBook will display a reminder asking you to type `clear confirm` to proceed.
 
 <div markdown="block" class="alert alert-success example-block">
 <span class="example-label">📌 <strong>Example: clear all contacts</strong></span>
-<pre class="example-command">clear</pre>
+<pre class="example-command">clear confirm</pre>
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
+<pre class="example-result">PingBook has been cleared!</pre>
 The contact list becomes empty.
 </div>
 
@@ -982,7 +997,7 @@ Use this table as a quick reference once you are familiar with the app.
 | **alias add** | `alias add ALIAS COMMAND_WORD` | `alias add la listarchived` |
 | **alias remove** | `alias remove ALIAS` | `alias remove la` |
 | **alias list** | `alias list` | `alias list` |
-| **clear** | `clear` | `clear` |
+| **clear** | `clear confirm` | `clear confirm` |
 | **help** | `help` | `help` |
 | **exit** | `exit` | `exit` |
 

@@ -8,6 +8,8 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +18,7 @@ import seedu.address.logic.Messages;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.FieldsContainKeywordsPredicate;
 import seedu.address.model.person.Person;
 
 public class ArchiveCommandTest {
@@ -60,6 +63,26 @@ public class ArchiveCommandTest {
 
         ArchiveCommand archiveCommand = new ArchiveCommand(INDEX_FIRST_PERSON);
         assertCommandFailure(archiveCommand, model, ArchiveCommand.MESSAGE_PERSON_ALREADY_ARCHIVED);
+    }
+
+    @Test
+    public void execute_validIndexFilteredList_preservesFilterContext() {
+        FieldsContainKeywordsPredicate predicate = new FieldsContainKeywordsPredicate(List.of("Alice"));
+        model.updateFilteredPersonList(predicate.and(model.getViewPredicate()));
+
+        Person personToArchive = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        ArchiveCommand archiveCommand = new ArchiveCommand(INDEX_FIRST_PERSON);
+        Person archivedPerson = personToArchive.withArchived(true);
+
+        String expectedMessage = String.format(ArchiveCommand.MESSAGE_ARCHIVE_PERSON_SUCCESS,
+                Messages.format(archivedPerson));
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.updateFilteredPersonList(predicate.and(expectedModel.getViewPredicate()));
+        expectedModel.setPerson(personToArchive, archivedPerson);
+
+        assertCommandSuccess(archiveCommand, model, expectedMessage, expectedModel);
+        assertTrue(model.getFilteredPersonList().isEmpty());
     }
 
     @Test

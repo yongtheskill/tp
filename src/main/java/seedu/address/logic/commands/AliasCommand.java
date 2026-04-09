@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.AliasRegistry;
 import seedu.address.model.Model;
@@ -32,9 +33,9 @@ public class AliasCommand extends Command {
      * Creates an {@code AliasCommand} for the given action.
      */
     public AliasCommand(String action, String alias, String command) {
-        this.action = action;
-        this.alias = alias;
-        this.command = command;
+        this.action = StringUtil.normalize(action);
+        this.alias = StringUtil.normalize(alias);
+        this.command = StringUtil.normalize(command);
     }
 
     private static Set<String> buildReservedCommandWords() {
@@ -65,6 +66,10 @@ public class AliasCommand extends Command {
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
+        if (action == null) {
+            throw new CommandException(MESSAGE_USAGE);
+        }
+
         switch (action) {
         case "add":
             if (!RESERVED_COMMAND_WORDS.contains(command)) {

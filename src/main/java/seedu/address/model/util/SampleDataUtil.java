@@ -15,7 +15,7 @@ import seedu.address.model.person.Remark;
 import seedu.address.model.tag.Tag;
 
 /**
- * Contains utility methods for populating {@code AddressBook} with sample data.
+ * Contains utility methods for populating PingBook with sample data.
  */
 public class SampleDataUtil {
     public static Person[] getSamplePersons() {
@@ -41,6 +41,9 @@ public class SampleDataUtil {
         };
     }
 
+    /**
+     * Returns a sample PingBook as a {@code ReadOnlyAddressBook}.
+     */
     public static ReadOnlyAddressBook getSampleAddressBook() {
         AddressBook sampleAb = new AddressBook();
         for (Person samplePerson : getSamplePersons()) {

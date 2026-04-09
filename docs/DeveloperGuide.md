@@ -107,6 +107,8 @@ How the parsing works:
 
 - When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
 - All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
+- `AddressBookParser` resolves user-defined aliases before dispatching to the built-in command switch, so aliases and built-in command words share the same downstream parser and validation logic.
+- For commands that should not accept trailing arguments (`list`, `listarchived`, `help`, `exit`, and `sort`), `AddressBookParser` performs a direct no-extra-arguments check before constructing the command. This prevents mistyped inputs such as `list archived` from being silently treated as `list`.
 
 ### Model component
 
@@ -132,6 +134,8 @@ The `Storage` component,
 - can save both address book data and user preference data in JSON format, and read them back into corresponding objects.
 - inherits from `AddressBookStorage`, `UserPrefsStorage`, and `AliasStorage`, so it can be treated as any one of those interfaces where only that capability is needed.
 - depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
+- uses `JsonPingBookStorage` as a shared implementation of both `AddressBookStorage` and `AliasStorage`, so contacts and aliases are persisted together in the same `data/pingbook.json` file.
+- attempts to recover from a malformed primary `pingbook.json` by reading the adjacent `.bak` backup file first, if one exists.
 
 ### Common classes
 
@@ -287,13 +291,19 @@ The `alias` command lets users define persistent shortcuts for built-in command 
 
 - `AliasRegistry` (in the `parser` package) holds the alias map in memory as a `HashMap<String, String>`.
 - `AliasCommand` owns a single static `AliasRegistry` instance shared across the application.
-- `AliasStorage` / `JsonAliasStorage` reads and writes `data/aliases.json` for persistence.
-- At startup, `MainApp` loads the stored alias map into the shared `AliasRegistry`.
+- `AddressBookParser` resolves aliases before dispatch, by normalising the input command word and checking it against the shared `AliasRegistry`.
+- `JsonPingBookStorage` stores aliases together with contacts inside `data/pingbook.json`.
+- At startup, `MainApp` loads the stored alias map into the shared `AliasRegistry`, rejecting malformed or reserved alias entries while keeping valid ones.
 - After every command, `LogicManager` calls `Storage#saveAll` to persist both the address book and the alias registry atomically.
+- If `pingbook.json` cannot be parsed during startup, `JsonPingBookStorage` attempts to read aliases from `pingbook.json.bak` before giving up.
 
-#### Design note: alias expansion
+#### Design note: alias validation
 
-Alias expansion during command dispatch is a planned extension. The `AddressBookParser` currently dispatches only on hard-coded command words; user-defined aliases are stored and persisted but are not yet resolved during parsing. A future iteration should look up the input command word in the `AliasRegistry` before entering the dispatch switch, substituting the resolved command word when a match is found.
+Aliases are constrained to avoid ambiguity during dispatch:
+
+- alias names cannot clash with reserved built-in command words.
+- alias targets must be existing built-in command words.
+- persisted aliases are validated again at startup so malformed manual edits do not poison the in-memory registry.
 
 ---
 
@@ -724,13 +734,13 @@ testers are expected to do more *exploratory* testing.
 ### Saving data
 
 1. Dealing with a missing data file
-     1. Delete `data/addressbook.json` (or rename it) before launching the app.<br>
-        Expected: The app starts with a set of sample contacts and creates a new `addressbook.json` on the first save.
+      1. Delete `data/pingbook.json` (or rename it) before launching the app.<br>
+          Expected: The app starts with a set of sample contacts and creates a new `pingbook.json` on the first save.
 
 2. Dealing with a corrupted data file
-     1. Open `data/addressbook.json` in a text editor and introduce invalid JSON (e.g., delete a closing brace).<br>
-        Expected: The app detects the corruption on launch, starts with an empty contact list, and logs a warning. The corrupted file is replaced on the next save.
+      1. Open `data/pingbook.json` in a text editor and introduce invalid JSON (e.g., delete a closing brace).<br>
+          Expected: If `data/pingbook.json.bak` exists and is valid, the app recovers contacts and aliases from the backup and logs a warning. If no valid backup exists, the app starts with an empty contact list and logs a warning.
 
-3. Dealing with a missing alias file
-     1. Delete `data/aliases.json` before launching the app.<br>
-        Expected: The app starts with no aliases defined. A new `aliases.json` is created on the first save.
+3. Dealing with a missing backup file
+      1. Delete `data/pingbook.json.bak` before launching the app.<br>
+          Expected: The app still uses `data/pingbook.json` normally. Backup recovery is simply unavailable until the next save operation creates a fresh `.bak` file.

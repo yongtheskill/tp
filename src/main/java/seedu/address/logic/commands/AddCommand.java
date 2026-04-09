@@ -64,6 +64,8 @@ public class AddCommand extends Command {
         }
 
         model.addPerson(toAdd);
+        model.setViewPredicate(Model.PREDICATE_SHOW_ACTIVE_PERSONS);
+        model.updateFilteredPersonList(model.getViewPredicate());
         int totalContacts = model.getAddressBook().getPersonList().size();
         return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd), totalContacts));
     }

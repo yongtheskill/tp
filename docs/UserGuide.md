@@ -630,8 +630,8 @@ Move an archived contact back to your active list.
 
 <div markdown="block" class="alert alert-success example-block">
 <span class="example-label">📌 <strong>Example: restore the first archived contact</strong></span>
-<pre class="example-command">listarchived
-unarchive 1</pre>
+<pre class="example-command">listarchived</pre>
+<pre class="example-command">unarchive 1</pre>
 <span class="example-result-label">✅ <strong>Expected result:</strong></span>
 <pre class="example-result">The contact disappears from the archived list and reappears when you run list.</pre>
 </div>

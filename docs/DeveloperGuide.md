@@ -563,6 +563,60 @@ Priorities: High (must have) - `* * *`, Medium (should have) - `* *`, Low (nice 
 
 ---
 
+## **Appendix: Effort**
+
+### Overview and baseline
+
+We used AB3 as the baseline in both architecture and development workflow. AB3 already provides a command-driven contact manager with clear component boundaries (`UI`, `Logic`, `Model`, `Storage`) and test scaffolding. PingBook extends that with workflow-oriented contact management features for student usage, including archiving/unarchiving, starring/un-starring, richer filtering/sorting behavior, remarks, and command aliases.
+
+Estimated total project effort is in the range of **150-250 person-hours** (implementation + tests + documentation + polish).
+
+### Difficulty level
+
+Overall difficulty is **moderate** relative to AB3-style projects.
+
+- At the architecture level, difficulty was moderate because AB3 already has strong separation of concerns.
+- At the feature-integration level, difficulty was high because multiple features interact with each other and must remain behaviorally consistent (e.g., archive state + list predicates + index-based commands + storage backward compatibility).
+- Unlike projects that increase complexity through multiple entity types, PingBook keeps a single core entity (`Person`) but increases complexity through **stateful behavior and cross-command invariants**.
+
+### Main challenges and effort drivers
+
+1. **Cross-feature consistency in command behavior**
+    Features like `archive`, `unarchive`, `list`, `listarchived`, `star`, `unstar`, and `sort` all affect what users see and which indices are valid. A large part of effort went into preserving predictable command semantics and avoiding regressions in list/index logic.
+
+2. **Model and storage evolution without breaking existing data**
+    Adding fields such as archived/starred/remark required careful model and JSON adapter updates, plus defaults for legacy data. This required additional implementation and testing effort to ensure old data remains readable.
+
+3. **Parser and command extensibility**
+    Introducing additional commands and aliases required updates in parser routing, command parsing, and validation rules while keeping command UX clear and error messages useful.
+
+4. **Test and documentation load**
+    AB3-derived codebases rely heavily on test coverage and design documentation quality. A non-trivial portion of effort was spent on parser/command/model/storage tests and DG/UG updates for feature clarity and traceability.
+
+### Reuse and its effect on effort
+
+A **significant portion (>5%)** of total effort was saved through reuse. Our estimate is that **about 35-45% of total effort** was saved by building on AB3 and existing libraries.
+
+Reused/adapted foundations include:
+
+- **AB3 architecture and application skeleton** (`MainApp`, component managers, command pipeline, and UI structure).
+- **AB3 parser/command framework**, adapted through classes such as `AddressBookParser`, `AliasCommandParser`, `ArchiveCommandParser`, `UnarchiveCommandParser`, `StarCommandParser`, and related command classes.
+- **AB3 storage pattern**, adapted in classes such as `JsonAddressBookStorage`, `JsonSerializableAddressBook`, and `JsonAdaptedPerson` to support new fields and compatibility behavior.
+- **Third-party libraries** that reduced implementation cost: JavaFX (UI), Jackson (JSON serialization), JUnit/Jacoco (testing and coverage).
+
+Reuse accelerated setup and reduced risk in core infrastructure, allowing effort to focus on feature adaptation, integration correctness, and quality assurance.
+
+### Achievements relative to effort
+
+- Delivered a cohesive CLI workflow for contact organisation (active vs archived views, starring, filtering, sorting, remarks, aliases).
+- Preserved the AB3 strengths (clear architecture, testability, maintainability) while extending user-facing behavior.
+- Maintained backward-compatible data handling for evolved person fields.
+- Produced comprehensive user/developer documentation and manual testing guidance aligned with implemented features.
+
+In summary, AB3 substantially reduced infrastructure effort, but PingBook still required meaningful engineering effort to integrate multiple interacting behaviors into a stable and user-friendly product.
+
+---
+
 ## **Appendix: Instructions for manual testing**
 
 Given below are instructions to test the app manually.

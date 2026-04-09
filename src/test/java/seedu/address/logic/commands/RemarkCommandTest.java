@@ -44,8 +44,7 @@ public class RemarkCommandTest {
         Remark newRemark = new Remark("Likes to swim.");
         RemarkCommand remarkCommand = new RemarkCommand(INDEX_FIRST_PERSON, newRemark);
 
-        Person editedPerson = new Person(personToEdit.getName(), personToEdit.getPhone(), personToEdit.getEmail(),
-                personToEdit.getAddress(), newRemark, personToEdit.getTags());
+        Person editedPerson = personToEdit.withRemark(newRemark);
         String expectedMessage = String.format(RemarkCommand.MESSAGE_ADD_REMARK_SUCCESS, Messages.format(editedPerson));
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
@@ -61,15 +60,13 @@ public class RemarkCommandTest {
     @Test
     public void execute_deleteRemarkUnfilteredList_success() {
         Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person personWithRemark = new Person(personToEdit.getName(), personToEdit.getPhone(), personToEdit.getEmail(),
-                personToEdit.getAddress(), new Remark("some text"), personToEdit.getTags());
+        Person personWithRemark = personToEdit.withRemark(new Remark("some text"));
         model.setPerson(personToEdit, personWithRemark);
 
         Remark emptyRemark = new Remark("");
         RemarkCommand remarkCommand = new RemarkCommand(INDEX_FIRST_PERSON, emptyRemark);
 
-        Person editedPerson = new Person(personWithRemark.getName(), personWithRemark.getPhone(),
-                personWithRemark.getEmail(), personWithRemark.getAddress(), emptyRemark, personWithRemark.getTags());
+        Person editedPerson = personWithRemark.withRemark(emptyRemark);
         String expectedMessage = String.format(RemarkCommand.MESSAGE_DELETE_REMARK_SUCCESS,
                 Messages.format(editedPerson));
 

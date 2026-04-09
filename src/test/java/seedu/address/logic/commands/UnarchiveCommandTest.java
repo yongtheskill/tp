@@ -29,16 +29,12 @@ public class UnarchiveCommandTest {
     @Test
     public void execute_validIndexUnfilteredArchivedList_success() {
         Person activePerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person archivedPerson = new Person(activePerson.getName(), activePerson.getPhone(),
-                activePerson.getEmail(), activePerson.getAddress(), activePerson.getRemark(),
-                true, activePerson.getTags());
+        Person archivedPerson = activePerson.withArchived(true);
         model.setPerson(activePerson, archivedPerson);
         model.updateFilteredPersonList(Person::isArchived);
 
         UnarchiveCommand unarchiveCommand = new UnarchiveCommand(INDEX_FIRST_PERSON);
-        Person unarchivedPerson = new Person(archivedPerson.getName(), archivedPerson.getPhone(),
-                archivedPerson.getEmail(), archivedPerson.getAddress(), archivedPerson.getRemark(),
-                false, archivedPerson.getTags());
+        Person unarchivedPerson = archivedPerson.withArchived(false);
 
         String expectedMessage = String.format(UnarchiveCommand.MESSAGE_UNARCHIVE_PERSON_SUCCESS,
                 Messages.format(unarchivedPerson));

@@ -91,8 +91,7 @@ public class ModelManagerTest {
 
     @Test
     public void getFilteredPersonList_archivedPerson_hiddenByDefault() {
-        Person archivedAlice = new Person(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(),
-                ALICE.getAddress(), ALICE.getRemark(), true, ALICE.getTags());
+        Person archivedAlice = ALICE.withArchived(true);
         modelManager.addPerson(archivedAlice);
 
         assertTrue(modelManager.getFilteredPersonList().isEmpty());

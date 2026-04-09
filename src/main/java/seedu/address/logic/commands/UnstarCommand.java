@@ -47,9 +47,7 @@ public class UnstarCommand extends Command {
                     Messages.format(personToUnstar)));
         }
 
-        Person unstarredPerson = new Person(personToUnstar.getName(), personToUnstar.getPhone(),
-                personToUnstar.getEmail(), personToUnstar.getAddress(), personToUnstar.getRemark(),
-                personToUnstar.isArchived(), personToUnstar.getTags(), false);
+        Person unstarredPerson = personToUnstar.withStarred(false);
         model.setPerson(personToUnstar, unstarredPerson);
         return new CommandResult(String.format(MESSAGE_UNSTAR_PERSON_SUCCESS, Messages.format(unstarredPerson)));
     }

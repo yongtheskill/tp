@@ -32,9 +32,7 @@ public class ArchiveCommandTest {
         Person personToArchive = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         ArchiveCommand archiveCommand = new ArchiveCommand(INDEX_FIRST_PERSON);
 
-        Person archivedPerson = new Person(personToArchive.getName(), personToArchive.getPhone(),
-                personToArchive.getEmail(), personToArchive.getAddress(), personToArchive.getRemark(),
-                true, personToArchive.getTags());
+        Person archivedPerson = personToArchive.withArchived(true);
 
         String expectedMessage = String.format(ArchiveCommand.MESSAGE_ARCHIVE_PERSON_SUCCESS,
                 Messages.format(archivedPerson));
@@ -56,9 +54,7 @@ public class ArchiveCommandTest {
     @Test
     public void execute_alreadyArchived_throwsCommandException() {
         Person personToArchive = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person archivedPerson = new Person(personToArchive.getName(), personToArchive.getPhone(),
-                personToArchive.getEmail(), personToArchive.getAddress(), personToArchive.getRemark(),
-                true, personToArchive.getTags());
+        Person archivedPerson = personToArchive.withArchived(true);
         model.setPerson(personToArchive, archivedPerson);
         model.updateFilteredPersonList(Person::isArchived);
 

@@ -107,6 +107,55 @@ public class Person {
     }
 
     /**
+     * Returns a copy of this person with the given starred state.
+     */
+    public Person withStarred(boolean starred) {
+        return new Person(name, phone, email, address, remark, isArchived, tags, starred);
+    }
+
+    /**
+     * Returns a copy of this person with the given remark.
+     */
+    public Person withRemark(Remark newRemark) {
+        return new Person(name, phone, email, address, newRemark, isArchived, tags, isStarred);
+    }
+
+    /**
+     * Returns a copy of this person with the given name.
+     */
+    public Person withName(Name newName) {
+        return new Person(newName, phone, email, address, remark, isArchived, tags, isStarred);
+    }
+
+    /**
+     * Returns a copy of this person with the given phone.
+     */
+    public Person withPhone(Phone newPhone) {
+        return new Person(name, newPhone, email, address, remark, isArchived, tags, isStarred);
+    }
+
+    /**
+     * Returns a copy of this person with the given email.
+     */
+    public Person withEmail(Email newEmail) {
+        return new Person(name, phone, newEmail, address, remark, isArchived, tags, isStarred);
+    }
+
+    /**
+     * Returns a copy of this person with the given address.
+     */
+    public Person withAddress(Address newAddress) {
+        return new Person(name, phone, email, newAddress, remark, isArchived, tags, isStarred);
+    }
+
+    /**
+     * Returns a copy of this person with the given tags.
+     */
+    public Person withTags(Set<Tag> newTags) {
+        return new Person(name, phone, email, address, remark, isArchived, newTags, isStarred);
+    }
+
+    /**
      * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */

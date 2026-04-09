@@ -176,6 +176,12 @@ public class JsonPingBookStorageTest {
     }
 
     @Test
+    public void readAliases_notJsonFormat_throwsDataLoadingException() {
+        assertThrows(DataLoadingException.class, () ->
+                storageAt(testDataPath("notJsonFormatPingBook.json")).readAliases());
+    }
+
+    @Test
     public void readAliases_fileWithNoAliasesField_returnsEmptyMap() throws Exception {
         // A pingbook file that has persons but no aliases key should deserialise aliases to {}
         Path filePath = tempPath("pingbook.json");
@@ -324,6 +330,55 @@ public class JsonPingBookStorageTest {
         java.nio.file.Files.writeString(filePath, "not valid json {{{{{");
         assertThrows(IOException.class, () ->
                 storageAt(filePath).saveAliases(new HashMap<>()));
+    }
+
+    @Test
+    public void readAddressBook_malformedPrimaryAndMalformedBackup_rethrowsWithSuppressedException() throws Exception {
+        Path filePath = tempPath("pingbook.json");
+        Path backupPath = tempPath("pingbook.json.bak");
+
+        java.nio.file.Files.writeString(filePath, "not valid json {{{{{");
+        java.nio.file.Files.writeString(backupPath, "also not valid json {{{{{");
+
+        DataLoadingException exception = assertThrows(DataLoadingException.class,
+                () -> storageAt(filePath).readAddressBook());
+
+        assertEquals(1, exception.getSuppressed().length);
+    }
+
+    @Test
+    public void readAddressBook_backupFilePath_doesNotAttemptRecursiveRecovery() throws Exception {
+        Path backupPath = tempPath("pingbook.json.bak");
+        java.nio.file.Files.writeString(backupPath, "not valid json {{{{{");
+
+        assertThrows(DataLoadingException.class, () -> storageAt(backupPath).readAddressBook());
+    }
+
+    @Test
+    public void readAliases_rootPathWithoutFileName_throwsDataLoadingExceptionInsteadOfNpe() {
+        assertThrows(DataLoadingException.class, () -> storageAt(Path.of("/")).readAliases());
+    }
+
+    @Test
+    public void readAliases_malformedPrimaryAndMalformedBackup_rethrowsWithSuppressedException() throws Exception {
+        Path filePath = tempPath("pingbook.json");
+        Path backupPath = tempPath("pingbook.json.bak");
+
+        java.nio.file.Files.writeString(filePath, "not valid json {{{{{");
+        java.nio.file.Files.writeString(backupPath, "also not valid json {{{{{");
+
+        DataLoadingException exception = assertThrows(DataLoadingException.class,
+                () -> storageAt(filePath).readAliases());
+
+        assertEquals(1, exception.getSuppressed().length);
+    }
+
+    @Test
+    public void readAliases_backupFilePath_doesNotAttemptRecursiveRecovery() throws Exception {
+        Path backupPath = tempPath("pingbook.json.bak");
+        java.nio.file.Files.writeString(backupPath, "not valid json {{{{{");
+
+        assertThrows(DataLoadingException.class, () -> storageAt(backupPath).readAliases());
     }
 
 }

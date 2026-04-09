@@ -107,4 +107,27 @@ public class FieldsContainKeywordsPredicateTest {
         String expected = FieldsContainKeywordsPredicate.class.getCanonicalName() + "{keywords=" + keywords + "}";
         assertEquals(expected, predicate.toString());
     }
+
+    @Test
+    public void test_personWithoutAddressAndEmptyRemark_returnsFalse() {
+        FieldsContainKeywordsPredicate predicate = new FieldsContainKeywordsPredicate(Arrays.asList("nonexistent"));
+
+        assertFalse(predicate.test(new PersonBuilder().withName("Alice").withNoAddress().build()));
+    }
+
+    @Test
+    public void test_nonMatchingNonEmptyRemark_returnsFalse() {
+        FieldsContainKeywordsPredicate predicate = new FieldsContainKeywordsPredicate(Arrays.asList("nonexistent"));
+
+        assertFalse(predicate.test(new PersonBuilder().withName("Alice").withNoAddress()
+                .withRemark("likes coffee").build()));
+    }
+
+    @Test
+    public void hashCodeMethod() {
+        List<String> keywords = List.of("keyword1", "keyword2");
+        FieldsContainKeywordsPredicate predicate = new FieldsContainKeywordsPredicate(keywords);
+
+        assertEquals(keywords.hashCode(), predicate.hashCode());
+    }
 }

@@ -68,4 +68,15 @@ public class EditPersonDescriptorTest {
                 + editPersonDescriptor.getTags().orElse(null) + "}";
         assertEquals(expected, editPersonDescriptor.toString());
     }
+
+    @Test
+    public void setAddressCleared_marksDescriptorAsEdited() {
+        EditPersonDescriptor descriptor = new EditPersonDescriptor();
+        descriptor.setAddressCleared();
+
+        assertTrue(descriptor.isAnyFieldEdited());
+        assertTrue(descriptor.isAddressCleared());
+        assertTrue(descriptor.equals(new EditPersonDescriptor(descriptor)));
+        assertFalse(descriptor.equals(new EditPersonDescriptor()));
+    }
 }

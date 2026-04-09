@@ -203,4 +203,16 @@ public class EditCommandParserTest {
 
         assertParseSuccess(parser, userInput, expectedCommand);
     }
+
+    @Test
+    public void parse_clearAddress_success() {
+        Index targetIndex = INDEX_FIRST_PERSON;
+        String userInput = targetIndex.getOneBased() + " " + PREFIX_ADDRESS;
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptor();
+        descriptor.setAddressCleared();
+        EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
 }

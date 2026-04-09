@@ -146,6 +146,29 @@ public class MainAppTest {
     }
 
     @Test
+    public void initAliases_emptyMap_clearsRegistry() {
+        AliasCommand.getAliasRegistry().addAlias("ls", "list", AliasCommand.RESERVED_COMMAND_WORDS);
+
+        AliasStorage storage = new AliasStorage() {
+            @Override
+            public Path getAliasesFilePath() {
+                return null;
+            }
+
+            @Override
+            public Optional<Map<String, String>> readAliases() {
+                return Optional.of(new HashMap<>());
+            }
+
+            @Override
+            public void saveAliases(Map<String, String> a) throws IOException {}
+        };
+
+        assertDoesNotThrow(() -> mainApp.initAliases(storage));
+        assertTrue(AliasCommand.getAliasRegistry().getAllAliases().isEmpty());
+    }
+
+    @Test
     public void initAliases_dataLoadingException_clearsRegistryAndDoesNotThrow() {
         AliasCommand.getAliasRegistry().addAlias("ls", "list", AliasCommand.RESERVED_COMMAND_WORDS);
 
@@ -197,6 +220,15 @@ public class MainAppTest {
         Files.writeString(configFile, "not-json");
 
         Config initializedConfig = mainApp.initConfig(configFile);
+
+        assertEquals(new Config(), initializedConfig);
+    }
+
+    @Test
+    public void initConfig_directoryPath_returnsDefaultConfigWhenSaveFails() throws IOException {
+        Path configDirectory = Files.createDirectory(tempDir.resolve("config-dir"));
+
+        Config initializedConfig = mainApp.initConfig(configDirectory);
 
         assertEquals(new Config(), initializedConfig);
     }

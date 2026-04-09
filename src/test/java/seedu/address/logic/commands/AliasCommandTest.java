@@ -88,6 +88,13 @@ public class AliasCommandTest {
     }
 
     @Test
+    public void execute_nullAction_throwsCommandException() {
+        AliasCommand cmd = new AliasCommand(null, null, null);
+        CommandException exception = assertThrows(CommandException.class, () -> cmd.execute(model));
+        assertEquals(AliasCommand.MESSAGE_USAGE, exception.getMessage());
+    }
+
+    @Test
     public void execute_removeAliasFail_correctMessage() {
         AliasCommand removeCmd = new AliasCommand("remove", "notfound", null);
         CommandException exception = assertThrows(CommandException.class, () -> removeCmd.execute(model));
@@ -111,6 +118,20 @@ public class AliasCommandTest {
     public void equals_differentFields_returnsFalse() {
         AliasCommand cmd1 = new AliasCommand("add", "lc", "list");
         AliasCommand cmd2 = new AliasCommand("add", "lc", "find");
+        assertFalse(cmd1.equals(cmd2));
+    }
+
+    @Test
+    public void equals_differentAction_returnsFalse() {
+        AliasCommand cmd1 = new AliasCommand("add", "lc", "list");
+        AliasCommand cmd2 = new AliasCommand("remove", "lc", "list");
+        assertFalse(cmd1.equals(cmd2));
+    }
+
+    @Test
+    public void equals_differentAlias_returnsFalse() {
+        AliasCommand cmd1 = new AliasCommand("add", "lc", "list");
+        AliasCommand cmd2 = new AliasCommand("add", "ls", "list");
         assertFalse(cmd1.equals(cmd2));
     }
 

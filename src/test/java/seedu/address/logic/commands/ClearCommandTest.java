@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
@@ -55,6 +56,20 @@ public class ClearCommandTest {
 
         model.addPerson(new PersonBuilder().build());
         assertEquals(1, model.getFilteredPersonList().size());
+    }
+
+    @Test
+    public void equalsAndHashCode() {
+        ClearCommand confirmedCommand = new ClearCommand(true);
+        ClearCommand sameConfirmedCommand = new ClearCommand(true);
+        ClearCommand unconfirmedCommand = new ClearCommand(false);
+
+        assertTrue(confirmedCommand.equals(confirmedCommand));
+        assertTrue(confirmedCommand.equals(sameConfirmedCommand));
+        assertFalse(confirmedCommand.equals(unconfirmedCommand));
+        assertFalse(confirmedCommand.equals(new ClearCommand()));
+        assertFalse(confirmedCommand.equals("not a command"));
+        assertEquals(confirmedCommand.hashCode(), sameConfirmedCommand.hashCode());
     }
 
 }

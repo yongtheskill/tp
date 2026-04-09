@@ -44,13 +44,29 @@ public class AliasRegistryTest {
     }
 
     @Test
+    public void addAlias_blankAlias_returnsFalse() {
+        assertFalse(registry.addAlias("   ", "list", Set.of("list")));
+    }
+
+    @Test
     public void addAlias_blankCommand_returnsFalse() {
         assertFalse(registry.addAlias("ls", "  ", Set.of("list")));
     }
 
     @Test
+    public void addAlias_nullCommand_returnsFalse() {
+        assertFalse(registry.addAlias("ls", null, Set.of("list")));
+    }
+
+    @Test
     public void addAlias_invalidCommandWord_returnsFalse() {
         assertFalse(registry.addAlias("ls", "missing", Set.of("list", "find")));
+    }
+
+    @Test
+    public void addAlias_nullReservedWords_allowsAlias() {
+        assertTrue(registry.addAlias("ls", "custom", null));
+        assertEquals("custom", registry.getCommandWord("ls"));
     }
 
     @Test

@@ -425,7 +425,7 @@ Priorities: High (must have) - `* * *`, Medium (should have) - `* *`, Low (nice 
 **MSS**
 
 1. User enters the `find` command with a keyword.
-2. PingBook displays all contacts whose **names** match the keyword (name-only search).
+2. PingBook displays all contacts matching the keyword.
 3. User identifies the index of the contact to delete from the filtered list.
 4. User enters the `delete` command with the contact's index.
 5. PingBook removes the contact and displays a success message.

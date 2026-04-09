@@ -13,11 +13,7 @@ Class ModelManager
 Class UserPrefs
 
 Class UniquePersonList
-Class Person {
-  - boolean isArchived
-  - boolean isStarred
-}
-show Person members
+Class Person
 Class Address
 Class Email
 Class Name

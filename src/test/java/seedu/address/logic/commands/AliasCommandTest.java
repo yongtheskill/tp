@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -62,5 +63,24 @@ public class AliasCommandTest {
         AliasCommand listCmd = new AliasCommand("list", null, null);
         CommandResult result = listCmd.execute(model);
         assertTrue(result.getFeedbackToUser().contains("lc -> list"), "expected alias listing to contain 'lc -> list'");
+    }
+
+    @Test
+    public void equals_sameObject_returnsTrue() {
+        AliasCommand cmd = new AliasCommand("add", "lc", "list");
+        assertTrue(cmd.equals(cmd));
+    }
+
+    @Test
+    public void equals_notAliasCommand_returnsFalse() {
+        AliasCommand cmd = new AliasCommand("add", "lc", "list");
+        assertFalse(cmd.equals("not an AliasCommand"));
+    }
+
+    @Test
+    public void hashCode_equalObjects_sameHash() {
+        AliasCommand cmd1 = new AliasCommand("add", "lc", "list");
+        AliasCommand cmd2 = new AliasCommand("add", "lc", "list");
+        assertEquals(cmd1.hashCode(), cmd2.hashCode());
     }
 }

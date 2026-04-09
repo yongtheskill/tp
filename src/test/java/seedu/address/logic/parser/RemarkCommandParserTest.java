@@ -60,4 +60,13 @@ public class RemarkCommandParserTest {
         assertParseFailure(parser, " 1 Anything",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, RemarkCommand.MESSAGE_USAGE));
     }
+
+    /**
+     * Verifies parsing fails when only an index is provided with no remark prefix.
+     */
+    @Test
+    public void parse_indexOnlyNoRemarkPrefix_failure() {
+        assertParseFailure(parser, " 1",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, RemarkCommand.MESSAGE_USAGE));
+    }
 }

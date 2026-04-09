@@ -95,6 +95,26 @@ public class StarCommandTest {
     }
 
     @Test
+    public void execute_starArchivedPerson_preservesArchivedFlag() {
+        Person personToStar = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person archivedPerson = personToStar.withArchived(true);
+        model.setPerson(personToStar, archivedPerson);
+        model.updateFilteredPersonList(Person::isArchived);
+
+        StarCommand starCommand = new StarCommand(INDEX_FIRST_PERSON);
+        Person expectedPerson = archivedPerson.withStarred(true);
+        String expectedMessage = String.format(StarCommand.MESSAGE_STAR_PERSON_SUCCESS,
+                Messages.format(expectedPerson));
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.setPerson(archivedPerson, expectedPerson);
+        expectedModel.updateFilteredPersonList(Person::isArchived);
+
+        assertCommandSuccess(starCommand, model, expectedMessage, expectedModel);
+        assertTrue(model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased()).isArchived());
+    }
+
+    @Test
     public void equals() {
         StarCommand starFirstCommand = new StarCommand(INDEX_FIRST_PERSON);
         StarCommand starSecondCommand = new StarCommand(INDEX_SECOND_PERSON);

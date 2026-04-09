@@ -96,6 +96,26 @@ public class UnstarCommandTest {
     }
 
     @Test
+    public void execute_unstarArchivedPerson_preservesArchivedFlag() {
+        Person personToUnstar = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person archivedStarredPerson = personToUnstar.withArchived(true).withStarred(true);
+        model.setPerson(personToUnstar, archivedStarredPerson);
+        model.updateFilteredPersonList(Person::isArchived);
+
+        UnstarCommand unstarCommand = new UnstarCommand(INDEX_FIRST_PERSON);
+        Person expectedPerson = archivedStarredPerson.withStarred(false);
+        String expectedMessage = String.format(UnstarCommand.MESSAGE_UNSTAR_PERSON_SUCCESS,
+                Messages.format(expectedPerson));
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.setPerson(archivedStarredPerson, expectedPerson);
+        expectedModel.updateFilteredPersonList(Person::isArchived);
+
+        assertCommandSuccess(unstarCommand, model, expectedMessage, expectedModel);
+        assertTrue(model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased()).isArchived());
+    }
+
+    @Test
     public void equals() {
         UnstarCommand unstarFirstCommand = new UnstarCommand(INDEX_FIRST_PERSON);
         UnstarCommand unstarSecondCommand = new UnstarCommand(INDEX_SECOND_PERSON);

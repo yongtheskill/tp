@@ -148,37 +148,37 @@ public class LogicManagerTest {
                 expectedModel);
     }
 
-        @Test
-        public void execute_deleteWhenSaveFails_rollsBackInMemoryState() {
+    @Test
+    public void execute_deleteWhenSaveFails_rollsBackInMemoryState() {
         Person person = new PersonBuilder()
-            .withName(VALID_NAME_AMY)
-            .withPhone(VALID_PHONE_AMY)
-            .withEmail(VALID_EMAIL_AMY)
-            .withAddress(VALID_ADDRESS_AMY)
-            .build();
+                .withName(VALID_NAME_AMY)
+                .withPhone(VALID_PHONE_AMY)
+                .withEmail(VALID_EMAIL_AMY)
+                .withAddress(VALID_ADDRESS_AMY)
+                .build();
         model = new ModelManager(new AddressBookBuilder().withPerson(person).build(), new UserPrefs());
 
         Path prefPath = temporaryFolder.resolve("DeleteSaveFailureAddressBook.json");
         JsonAddressBookStorage addressBookStorage = new JsonAddressBookStorage(prefPath) {
             @Override
             public void saveAddressBook(ReadOnlyAddressBook addressBook, Path filePath)
-                throws IOException {
-            throw DUMMY_AD_EXCEPTION;
+                    throws IOException {
+                throw DUMMY_AD_EXCEPTION;
             }
         };
 
         JsonUserPrefsStorage userPrefsStorage =
-            new JsonUserPrefsStorage(temporaryFolder.resolve("DeleteSaveFailureUserPrefs.json"));
+                new JsonUserPrefsStorage(temporaryFolder.resolve("DeleteSaveFailureUserPrefs.json"));
         JsonAliasStorage aliasStorage = new JsonAliasStorage(temporaryFolder.resolve("DeleteSaveFailureAliases.json"));
         logic = new LogicManager(model, new StorageManager(addressBookStorage, userPrefsStorage, aliasStorage));
 
         Model expectedModel = new ModelManager(new AddressBookBuilder().withPerson(person).build(), new UserPrefs());
         assertCommandFailure(DeleteCommand.COMMAND_WORD + " 1", CommandException.class,
-            String.format(LogicManager.FILE_OPS_PERMISSION_ERROR_FORMAT, model.getAddressBookFilePath()),
-            expectedModel);
+                String.format(LogicManager.FILE_OPS_PERMISSION_ERROR_FORMAT, model.getAddressBookFilePath()),
+                expectedModel);
         assertEquals(1, logic.getFilteredPersonList().size());
         assertEquals(person, logic.getFilteredPersonList().get(0));
-        }
+    }
 
     @Test
     public void execute_storageThrowsIoException_throwsCommandException() {

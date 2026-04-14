@@ -164,6 +164,19 @@ public class EditCommandTest {
     }
 
     @Test
+    public void execute_archivedPerson_failure() {
+        Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person archivedPerson = new PersonBuilder(personToEdit).withArchived(true).build();
+        model.setPerson(personToEdit, archivedPerson);
+        model.updateFilteredPersonList(Person::isArchived);
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB).build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+
+        assertCommandFailure(editCommand, model, EditCommand.MESSAGE_PERSON_ARCHIVED);
+    }
+
+    @Test
     public void equals() {
         final EditCommand standardCommand = new EditCommand(INDEX_FIRST_PERSON, DESC_AMY);
 

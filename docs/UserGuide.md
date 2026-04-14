@@ -483,6 +483,7 @@ Changes one or more details of an existing contact.
 - You must change at least one field; you cannot run `edit 3` with nothing after it.
 - Any field you leave out stays unchanged, **except tags**: if you include any `t/` value, it **replaces all** existing tags. To remove all tags entirely, use `t/` with nothing after it.
 - To clear the address field, use `a/` with nothing after it.
+- `edit` only works on active contacts. To edit an archived contact, first [unarchive](#restoring-an-archived-contact-unarchive) it.
 - If you edit a name to one that already exists anywhere in PingBook (including archived contacts), the edit is rejected with the duplicate-person error. If this happens, run `listarchived` to check for a name conflict in archived contacts.
 
 ##### Steps

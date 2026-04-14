@@ -814,6 +814,11 @@ testers are expected to do more *exploratory* testing.
      1. Test case: `edit 999 p/91234567`<br>
         Expected: Error message. List unchanged.
 
+8. Attempting to edit an archived contact
+     1. Prerequisites: Use `listarchived` to show archived contacts with at least one person.
+     2. Test case: `edit 1 p/91234567`<br>
+    Expected: Error message indicating archived contacts cannot be edited directly and must be unarchived first.
+
 ### Adding a remark
 
 1. Adding a new remark to a contact

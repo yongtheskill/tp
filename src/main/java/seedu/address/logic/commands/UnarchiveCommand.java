@@ -22,9 +22,9 @@ public class UnarchiveCommand extends Command {
             + "Example: " + COMMAND_WORD + " 1";
 
     public static final String MESSAGE_UNARCHIVE_PERSON_SUCCESS = "Unarchived Person: %1$s";
-        public static final String MESSAGE_NO_ARCHIVED_CONTACTS_SHOWN =
+    public static final String MESSAGE_NO_ARCHIVED_CONTACTS_SHOWN =
             "No archived contacts are shown. Run listarchived first, then use unarchive INDEX.";
-        public static final String MESSAGE_PERSON_ALREADY_ACTIVE = "This person is already active.";
+    public static final String MESSAGE_PERSON_ALREADY_ACTIVE = "This person is already active.";
 
     private final Index targetIndex;
 
